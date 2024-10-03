@@ -1,8 +1,8 @@
 import { SearchResponse, SuggestionsResponse } from "@/types/mercadolibreResponses";
 
-export async function searchTerm(
+export async function getSearches(
   term: string
-): Promise<SearchResponse | undefined> {
+): Promise<SearchResponse> {
   try {
     const encodedTerm = encodeURIComponent(term);
     const response = await fetch(
@@ -24,7 +24,7 @@ export async function searchTerm(
 
 export async function getSuggestions(
   message: string
-): Promise<SuggestionsResponse | undefined> {
+): Promise<SuggestionsResponse> {
   try {
     console.log({ message });
     const encodedMessage = encodeURIComponent(message);

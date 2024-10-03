@@ -2,7 +2,7 @@ import { OpenAI } from "openai";
 
 export const gptQuery = async (
   body: OpenAI.Chat.Completions.ChatCompletionCreateParamsNonStreaming
-) => {
+): Promise<{ message: string }> => {
   const response = await fetch("/api/openai", {
     method: "POST",
     headers: {

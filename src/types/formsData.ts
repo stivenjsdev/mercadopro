@@ -5,3 +5,5 @@ export type TermFormData = {
 export type ImageFormData = {
   url: string;
 };
+
+export type Status = "loading" | "success" | "error";
