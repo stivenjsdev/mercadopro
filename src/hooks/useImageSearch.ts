@@ -46,7 +46,7 @@ export default function useImageSearch() {
               content: [
                 {
                   type: "text",
-                  text: "Genera una descripción para el siguiente producto, para ser utilizada en plataformas de e-commerce como eBay, Amazon y MercadoLibre. La descripción debe ser clara, concisa y atractiva para los compradores potenciales. responde me directamente con la descripción generada.",
+                  text: "Genera una descripción para el siguiente producto, para ser utilizada en plataformas de e-commerce como eBay, Amazon y MercadoLibre. La descripción debe ser clara, concisa y atractiva para los compradores potenciales. responde me directamente con la descripción generada. La descripción debe tener la forma de la siguiente plantilla: [Palabras claves del producto] \n [Presentación de la empresa] \n es un [Tipo de Producto] que [Descripción del Producto] . Es ideal para [Público Objetivo - Para que me sirve el Producto] y se destaca por [Características del Producto] \n [Especificaciones técnicas del Producto]. \n Se entrega con [Accesorios del Producto] \n [Garantía del Producto] \n [Políticas de Devolución] \n [Formas de Pago] \n [Lista de todos mis Productos] \n [Preguntas frecuentes] \n Estamos dispuestos para todo lo que necesites \n [Nombre de la Empresa].",
                 },
                 {
                   type: "image_url",
