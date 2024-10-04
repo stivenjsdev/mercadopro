@@ -13,7 +13,7 @@ export default function Home() {
           Generador palabras claves de productos por: Sergio Jimenez
         </span>
       </h1>
-      <div className="w-full max-w-md mx-auto space-y-4">
+      <div className="w-full max-w-lg mx-auto space-y-4">
         <Tabs defaultValue="term" className="w-full">
           <TabsList className="w-full flex flex-row">
             <TabsTrigger value="term" className="flex-1">
