@@ -17,10 +17,10 @@ export default function Home() {
         <Tabs defaultValue="term" className="w-full">
           <TabsList className="w-full flex flex-row">
             <TabsTrigger value="term" className="flex-1">
-              Por Termino
+              Titulo Por Termino
             </TabsTrigger>
             <TabsTrigger value="image" className="flex-1">
-              Por Imagen
+              Descripción Por Imagen
             </TabsTrigger>
           </TabsList>
           <TabsContent value="term">
