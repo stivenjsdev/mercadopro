@@ -47,7 +47,7 @@ export default function ImageSearch() {
               <FormItem>
                 <FormLabel>URL imagen del Producto</FormLabel>
                 <FormControl>
-                  <Input placeholder="URL imagen del producto..." {...field} />
+                  <Input placeholder="Pega la URL de tu imagen aquí..." {...field} />
                 </FormControl>
                 <FormDescription>
                   Genera Keywords y Descripción sobre el Producto.
