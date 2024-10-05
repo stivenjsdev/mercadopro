@@ -41,7 +41,7 @@ export default function TermSearch() {
               <FormItem>
                 <FormLabel>Termino de Búsqueda</FormLabel>
                 <FormControl>
-                  <Input placeholder="Que deseas buscar?..." {...field} />
+                  <Input placeholder="Escribe aquí el nombre del producto..." {...field} />
                 </FormControl>
                 <FormDescription>
                   Este es tu termino de búsqueda para buscar productos en ML.
