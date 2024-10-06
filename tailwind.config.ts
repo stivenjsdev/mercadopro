@@ -21,6 +21,10 @@ const config: Config = {
           DEFAULT: "hsl(var(--popover))",
           foreground: "hsl(var(--popover-foreground))",
         },
+        mercadopro: {
+          DEFAULT: "hsl(var(--mercadopro))",
+          foreground: "hsl(var(--mercadopro-foreground))",
+        },
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
@@ -36,6 +40,10 @@ const config: Config = {
         accent: {
           DEFAULT: "hsl(var(--accent))",
           foreground: "hsl(var(--accent-foreground))",
+          mercadopro: {
+            DEFAULT: "hsl(var(--accent-mercadopro))",
+            foreground: "hsl(var(--accent-mercadopro-foreground))",
+          }
         },
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
