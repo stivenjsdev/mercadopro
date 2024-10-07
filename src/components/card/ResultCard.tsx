@@ -42,7 +42,7 @@ export function ResultCard({
         </CardHeader>
         <CardContent>
           <p className="text-red-500">
-            An error occurred while processing the image. Please try again.
+            Se produjo un error al procesar la imagen. Inténtalo nuevamente.
           </p>
         </CardContent>
       </Card>

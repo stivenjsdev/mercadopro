@@ -1,8 +1,10 @@
 export type TermFormData = {
-  message: string;
+  productName: string;
+  imageUrl: string;
 };
 
 export type ImageFormData = {
+  productName: string;
   url: string;
 };
 

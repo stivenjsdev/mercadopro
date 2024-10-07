@@ -1,0 +1,66 @@
+import { useKeywords } from "@/hooks/useKeywords";
+import { gptQuery } from "@/services/gptApi";
+import { Status } from "@/types/formsData";
+import { OpenAI } from "openai";
+import { useState } from "react";
+
+export default function useProductDescription() {
+  const [description, setDescription] = useState("");
+  const [status, setStatus] = useState<Status>("success");
+  const {
+    keywords,
+    status: imageStatus,
+    generateKeywordsByImageUrl,
+  } = useKeywords();
+
+  const generateKeywordsAndSuggestedDescription = async (
+    productName: string,
+    url: string
+  ) => {
+    setStatus("loading");
+    try {
+      const bodyDescription: OpenAI.Chat.Completions.ChatCompletionCreateParamsNonStreaming =
+        {
+          model: "gpt-4o-mini",
+          messages: [
+            {
+              role: "user",
+              content: [
+                {
+                  type: "text",
+                  text: `**Generar una descripción de producto en ESPAÑOL para una plataforma de venta online, El nombre del producto es:${productName}** Por favor, cree una descripción clara, concisa y atractiva para el siguiente producto: **Tipo de producto**: Identifique la categoría o tipo de producto (por ejemplo, «joyería», «electrodoméstico de cocina», etc.) **Descripción del producto**: Proporcione una completa descripción con las características y ventajas del producto (por ejemplo, «Un impresionante anillo de diamantes de 14 quilates, perfecto para cualquier ocasión especial») **Público objetivo**: Defina claramente el público al que va dirigido el producto (por ejemplo, «Parejas que celebran aniversarios o compromisos», «Amantes del café que buscan una cafetera de alta calidad»). **Características del producto**: Destaque las características clave que distinguen al producto (por ejemplo, «Diamante de alta calidad, diseño duradero, fácil de ajustar»). **Especificaciones técnicas**: Incluya cualquier detalle técnico relevante, como dimensiones, materiales o certificaciones (por ejemplo, «Oro de 14 quilates, 0,5 quilates, diamante libre de conflictos»). **Accesorios del producto**: Mencione cualquier artículo adicional incluido con el producto (por ejemplo, «Caja de regalo de lujo, paño de pulido»). **Política de devoluciones**: Especifique las políticas de devolución y cambio (por ejemplo, «Devoluciones fáciles en 30 días, reembolso completo o cambio») **Métodos de pago**: Enumere los métodos de pago aceptados (por ejemplo, «Tarjetas de crédito, PayPal, transferencia bancaria») **Preguntas frecuentes**: Sugiera incluir una sección con preguntas y respuestas frecuentes (por ejemplo, «P: ¿El diamante está libre de conflictos? R: Sí, nuestros diamantes son 100% libres de conflicto) **Nombre de la empresa**: Incluya el nombre de su empresa y una llamada a la acción (por ejemplo, «Póngase en contacto con nosotros en [Nombre de su empresa] para cualquier pregunta o duda»). Responda con la descripción del producto generada utilizando esta plantilla. Separa cada uno de los puntos con multiples - ó / ó *`,
+                },
+                {
+                  type: "image_url",
+                  image_url: { url },
+                },
+              ],
+            },
+          ],
+        };
+
+      const [{ message }] = await Promise.all([
+        gptQuery(bodyDescription),
+        generateKeywordsByImageUrl(url, productName),
+      ]);
+      if (!message) {
+        setStatus("error");
+        return;
+      }
+      console.log("useProductDescription -> message:", message);
+      setDescription(message);
+      setStatus("success");
+    } catch (error) {
+      console.log(error);
+      setStatus("error");
+    }
+  };
+
+  return {
+    keywords,
+    description,
+    status,
+    imageStatus,
+    generateKeywordsAndSuggestedDescription,
+  };
+}

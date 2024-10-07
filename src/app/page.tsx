@@ -1,5 +1,5 @@
-import ImageSearch from "@/components/search/ImageSearch";
-import TermSearch from "@/components/search/TermSearch";
+import DescriptionSearch from "@/components/search/DescriptionSearch";
+import TitleSearch from "@/components/search/TitleSearch";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Image from "next/image";
@@ -40,13 +40,13 @@ export default function Home() {
             <TabsContent value="term">
               <Suspense fallback={<Skeleton className="h-[200px] w-full" />}>
                 {/* Componente Consulta por Termino */}
-                <TermSearch />
+                <TitleSearch />
               </Suspense>
             </TabsContent>
             <TabsContent value="image">
               <Suspense fallback={<Skeleton className="h-[200px] w-full" />}>
                 {/* Componente Generar por URL de Imagen */}
-                <ImageSearch />
+                <DescriptionSearch />
               </Suspense>
             </TabsContent>
           </Tabs>
