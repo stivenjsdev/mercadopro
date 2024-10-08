@@ -108,11 +108,7 @@ const AuthComponent = () => {
 
   const fetchUserInfo = async (token: string) => {
     try {
-      const response = await fetch("https://api.mercadolibre.com/users/me", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await fetch(`/api/user/me?token=${token}`)
       if (response.ok) {
         const data: UserInfo = await response.json();
         console.log(data);
