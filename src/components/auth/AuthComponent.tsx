@@ -3,18 +3,65 @@
 import DescriptionSearch from "@/components/search/DescriptionSearch";
 import TitleSearch from "@/components/search/TitleSearch";
 import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+} from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UserInfo } from "@/types/mercadolibreResponses";
 import { TokenData } from "@/types/tokenData";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
-import { Skeleton } from "../ui/skeleton";
+import { useForm } from "react-hook-form";
+
+type Country = {
+  value: string;
+  label: string;
+};
+
+const countries: Country[] = [
+  { value: "com.ar", label: "Argentina" },
+  { value: "com.bo", label: "Bolivia" },
+  { value: "com.br", label: "Brasil" },
+  { value: "cl", label: "Chile" },
+  { value: "com.co", label: "Colombia" },
+  { value: "co.cr", label: "Costa Rica" },
+  { value: "com.do", label: "Dominicana" },
+  { value: "com.ec", label: "Ecuador" },
+  { value: "com.sv", label: "El Salvador" },
+  { value: "com.gt", label: "Guatemala" },
+  { value: "com.hn", label: "Honduras" },
+  { value: "com.mx", label: "Mexico" },
+  { value: "com.ni", label: "Nicaragua" },
+  { value: "com.pa", label: "Panamá" },
+  { value: "com.py", label: "Paraguay" },
+  { value: "com.pe", label: "Perú" },
+  { value: "com.uy", label: "Uruguay" },
+  { value: "com.ve", label: "Venezuela" },
+];
 
 const AuthComponent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+
+  const form = useForm<{ country: string }>({
+    defaultValues: {
+      country: "com.co",
+    },
+  });
 
   useEffect(() => {
     // Verificar si hay un token en la URL
@@ -50,12 +97,12 @@ const AuthComponent = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams, router]);
 
-  const handleLogin = () => {
+  const loginSubmit = (data: { country: string }) => {
     const clientId = process.env.NEXT_PUBLIC_MERCADOLIBRE_CLIENT_ID;
     const redirectUri = encodeURIComponent(
       process.env.NEXT_PUBLIC_MERCADOLIBRE_REDIRECT_URI || ""
     );
-    const authUrl = `https://auth.mercadolibre.com.co/authorization?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}`;
+    const authUrl = `https://auth.mercadolibre.${data.country}/authorization?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}`;
     window.location.href = authUrl;
   };
 
@@ -121,33 +168,71 @@ const AuthComponent = () => {
           <h2 className="text-sm font-light text-center">
             Bienvenido {userInfo.first_name} {userInfo.last_name}
           </h2>
-          <Tabs defaultValue="term" className="w-full">
+          <Tabs defaultValue="title" className="w-full">
             <TabsList className="w-full flex flex-row">
-              <TabsTrigger value="term" className="flex-1">
+              <TabsTrigger value="title" className="flex-1">
                 Titulo de Producto
               </TabsTrigger>
-              <TabsTrigger value="image" className="flex-1">
+              <TabsTrigger value="description" className="flex-1">
                 Descripción de Producto
               </TabsTrigger>
             </TabsList>
-            <TabsContent value="term">
+            <TabsContent value="title">
               <Suspense fallback={<Skeleton className="h-[200px] w-full" />}>
-                {/* Componente Consulta por Termino */}
+                {/* Componente Consulta Titulo*/}
                 <TitleSearch />
               </Suspense>
             </TabsContent>
-            <TabsContent value="image">
+            <TabsContent value="description">
               <Suspense fallback={<Skeleton className="h-[200px] w-full" />}>
-                {/* Componente Generar por URL de Imagen */}
+                {/* Componente Generar Description */}
                 <DescriptionSearch />
               </Suspense>
             </TabsContent>
           </Tabs>
         </>
       ) : (
-        <Button onClick={handleLogin} className="w-full">
-          Vincular con MercadoLibre
-        </Button>
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(loginSubmit)}
+            className="space-y-6 mb-4"
+          >
+            <FormField
+              control={form.control}
+              name="country"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-sm font-medium">
+                    Selecciona tu país
+                  </FormLabel>
+                  <Select
+                    onValueChange={(value) => field.onChange(value)}
+                    value={String(field.value)}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecciona tu país" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {countries.map((country) => (
+                        <SelectItem
+                          key={country.value}
+                          value={String(country.value)}
+                        >
+                          {country.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormItem>
+              )}
+            />
+            <Button type="submit" className="w-full">
+              Vincular con MercadoLibre
+            </Button>
+          </form>
+        </Form>
       )}
     </>
   );
