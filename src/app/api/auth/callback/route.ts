@@ -58,7 +58,8 @@ function getBaseUrl(url: string): string {
   // Verificar si es una URL de vista previa de Netlify
   if (host.includes("--")) {
     const [deployId, ...rest] = host.split("--");
-    return `https://${deployId}--${rest.join("--")}`;
+    console.log(deployId, rest);
+    return `https://${rest.join("--")}`;
   }
 
   // URL de producción o desarrollo local
