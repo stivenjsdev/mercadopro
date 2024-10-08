@@ -17,6 +17,7 @@ import { useState } from "react";
 
 export const useProductTitle = () => {
   const [suggestedTitles, setSuggestedTitles] = useState<string[]>([]);
+  const [trends, setTrends] = useState<TrendsResponse[][]>([]);
   const [status, setStatus] = useState<Status>("success");
   const {
     keywords: imageKeywords,
@@ -33,7 +34,7 @@ export const useProductTitle = () => {
     mutationFn: getSearches,
   });
 
-  const { data: trends, mutateAsync: mutateTrends } = useMutation({
+  const { mutateAsync: mutateTrends } = useMutation({
     mutationFn: getTrends,
   });
 
@@ -79,6 +80,7 @@ export const useProductTitle = () => {
           )
         );
         console.log(trends);
+        setTrends(trends);
       }
       setStatus("success");
     } catch (error) {

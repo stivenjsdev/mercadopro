@@ -27,6 +27,7 @@ export default function TitleSearch({ userData }: TitleSearchProps) {
     productNameKeywords,
     imageKeywords,
     searches,
+    trends,
     suggestedTitles,
     status,
     imageStatus,
@@ -40,7 +41,11 @@ export default function TitleSearch({ userData }: TitleSearchProps) {
 
   const onSubmit = (formData: TermFormData) => {
     const { productName, imageUrl } = formData;
-    generateKeywordsSuggestedTitlesAndTrends(productName, imageUrl, userData.site_id);
+    generateKeywordsSuggestedTitlesAndTrends(
+      productName,
+      imageUrl,
+      userData.site_id
+    );
     form.reset();
   };
 
@@ -134,6 +139,20 @@ export default function TitleSearch({ userData }: TitleSearchProps) {
               </span>
             </p>
           ))}
+      </ResultCard>
+
+      <ResultCard
+        title="Tendencias"
+        description="Estas son las palabras clave más buscadas en ML para tu producto."
+        status={status}
+      >
+        {trends &&
+          trends.length !== 0 &&
+          trends.map((categoryTrends) =>
+            categoryTrends.map((trend, index) => (
+              <p key={`${index}-${trend.keyword}`}>{trend.keyword}</p>
+            ))
+          )}
       </ResultCard>
 
       <ResultCard
