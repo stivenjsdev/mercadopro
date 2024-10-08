@@ -19,16 +19,16 @@ export async function GET(request: Request) {
         },
         body: new URLSearchParams({
           grant_type: "authorization_code",
-          client_id: process.env.MERCADOLIBRE_CLIENT_ID!,
-          client_secret: process.env.MERCADOLIBRE_CLIENT_SECRET!,
+          client_id: process.env.NEXT_PUBLIC_MERCADOLIBRE_CLIENT_ID!,
+          client_secret: process.env.NEXT_PUBLIC_MERCADOLIBRE_CLIENT_SECRET!,
           code: code,
-          redirect_uri: process.env.MERCADOLIBRE_REDIRECT_URI!,
+          redirect_uri: process.env.NEXT_PUBLIC_MERCADOLIBRE_REDIRECT_URI!,
         }),
       }
     );
 
     if (!tokenResponse.ok) {
-      throw new Error("Failed to exchange code for token");
+      throw new Error(`Failed to exchange code for token ${tokenResponse.status}. ${tokenResponse}` );
     }
 
     const tokenData = await tokenResponse.json();
