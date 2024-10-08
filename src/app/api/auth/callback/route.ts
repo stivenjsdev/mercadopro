@@ -28,14 +28,19 @@ export async function GET(request: Request) {
     );
 
     if (!tokenResponse.ok) {
-      throw new Error(`Failed to exchange code for token ${tokenResponse.status}. ${tokenResponse}` );
+      throw new Error(
+        `Failed to exchange code for token ${tokenResponse.status}`
+      );
     }
 
     const tokenData = await tokenResponse.json();
 
+    // Obtener la URL base de la aplicación
+    const baseUrl = getBaseUrl(request.url);
+
     // Redirigir al cliente con el token como parámetro de consulta
     return NextResponse.redirect(
-      new URL(`/?token=${tokenData.access_token}`, request.url)
+      new URL(`${baseUrl}/?token==${tokenData.access_token}`)
     );
   } catch (error) {
     console.error("Error exchanging code for token:", error);
@@ -44,4 +49,18 @@ export async function GET(request: Request) {
       { status: 500 }
     );
   }
+}
+
+function getBaseUrl(url: string): string {
+  const parsedUrl = new URL(url);
+  const host = parsedUrl.host;
+
+  // Verificar si es una URL de vista previa de Netlify
+  if (host.includes("--")) {
+    const [deployId, ...rest] = host.split("--");
+    return `https://${deployId}--${rest.join("--")}`;
+  }
+
+  // URL de producción o desarrollo local
+  return `${parsedUrl.protocol}//${host}`;
 }
