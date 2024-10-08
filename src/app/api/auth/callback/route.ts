@@ -40,7 +40,7 @@ export async function GET(request: Request) {
 
     // Redirigir al cliente con el token como parámetro de consulta
     return NextResponse.redirect(
-      new URL(`${baseUrl}/?token==${tokenData.access_token}`)
+      new URL(`${baseUrl}/?token=${tokenData.access_token}`)
     );
   } catch (error) {
     console.error("Error exchanging code for token:", error);
