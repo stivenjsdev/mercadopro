@@ -14,7 +14,7 @@ export async function getSearches({
   try {
     const encodedTerm = encodeURIComponent(term);
     const response = await fetch(
-      `https://api.mercadolibre.com/sites/${siteId}/search?q=${encodedTerm}&limit=6`
+      `/api/user/search?siteId=${siteId}&term=${encodedTerm}`
     );
 
     if (!response.ok) {
