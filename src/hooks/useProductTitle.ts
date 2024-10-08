@@ -58,16 +58,17 @@ export const useProductTitle = () => {
       const categoryIds = searches?.results.map((item) => item.category_id);
       const uniqueCategoryIds = [...new Set(categoryIds)];
       console.log(uniqueCategoryIds);
-      const trends: TrendsResponse[][] = await Promise.all(
-        uniqueCategoryIds.map((categoryId) =>
-          fetchTrendsByCategory(
-            categoryId,
-            siteId,
-            process.env.NEXT_PUBLIC_MERCADOLIBRE_TOKEN || ""
+      const storedTokenData = localStorage.getItem("MERCADOLIBRE_TOKEN_DATA");
+      if (storedTokenData) {
+        const tokenData = JSON.parse(storedTokenData);
+        console.log(tokenData.access_token);
+        const trends: TrendsResponse[][] = await Promise.all(
+          uniqueCategoryIds.map((categoryId) =>
+            fetchTrendsByCategory(categoryId, siteId, tokenData.access_token)
           )
-        )
-      );
-      console.log(trends);
+        );
+        console.log(trends);
+      }
       setStatus("success");
     } catch (error) {
       console.log(error);
@@ -143,7 +144,7 @@ export const useProductTitle = () => {
 
       return data;
     } catch (error) {
-      throw new Error(error instanceof Error ? error.message : "Unknown error");
+      throw error instanceof Error ? error : new Error("Unknown error");
     }
   };
 
