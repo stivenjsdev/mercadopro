@@ -5,6 +5,7 @@ import TitleSearch from "@/components/search/TitleSearch";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UserInfo } from "@/types/mercadolibreResponses";
+import { TokenData } from "@/types/tokenData";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import { Skeleton } from "../ui/skeleton";
@@ -19,19 +20,34 @@ const AuthComponent = () => {
     // Verificar si hay un token en la URL
     const tokenFromUrl = searchParams.get("token");
     if (tokenFromUrl) {
-      // Almacenar el token en localStorage
-      localStorage.setItem("MERCADOLIBRE_TOKEN_DATA", tokenFromUrl);
-      // Limpiar el token de la URL
-      router.replace("/");
+      try {
+        const tokenData: TokenData = JSON.parse(atob(tokenFromUrl));
+        localStorage.setItem(
+          "MERCADOLIBRE_TOKEN_DATA",
+          JSON.stringify({
+            ...tokenData,
+            expires_at: Date.now() + tokenData.expires_in * 1000,
+          })
+        );
+        router.replace("/");
+      } catch (error) {
+        console.error("Error parsing token data:", error);
+      }
     }
 
     // Verificar si hay un token en localStorage
-    const token = localStorage.getItem("MERCADOLIBRE_TOKEN_DATA");
-    if (token) {
-      fetchUserInfo(token);
+    const storedTokenData = localStorage.getItem("MERCADOLIBRE_TOKEN_DATA");
+    if (storedTokenData) {
+      const tokenData = JSON.parse(storedTokenData);
+      if (Date.now() < tokenData.expires_at) {
+        fetchUserInfo(tokenData.access_token);
+      } else {
+        refreshToken(tokenData.refresh_token);
+      }
     } else {
       setIsLoading(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams, router]);
 
   const handleLogin = () => {
@@ -59,6 +75,37 @@ const AuthComponent = () => {
         localStorage.removeItem("MERCADOLIBRE_TOKEN_DATA");
       }
       setIsLoading(false);
+    } catch (error) {
+      console.error("Error:", error);
+      setIsLoading(false);
+    }
+  };
+
+  const refreshToken = async (refreshToken: string) => {
+    try {
+      const response = await fetch("/api/auth/refresh", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ refresh_token: refreshToken }),
+      });
+
+      if (response.ok) {
+        const newTokenData: TokenData = await response.json();
+        localStorage.setItem(
+          "MERCADOLIBRE_TOKEN_DATA",
+          JSON.stringify({
+            ...newTokenData,
+            expires_at: Date.now() + newTokenData.expires_in * 1000,
+          })
+        );
+        fetchUserInfo(newTokenData.access_token);
+      } else {
+        console.error("Error refreshing token");
+        localStorage.removeItem("MERCADOLIBRE_TOKEN_DATA");
+        setIsLoading(false);
+      }
     } catch (error) {
       console.error("Error:", error);
       setIsLoading(false);

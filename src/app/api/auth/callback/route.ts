@@ -35,12 +35,15 @@ export async function GET(request: Request) {
 
     const tokenData = await tokenResponse.json();
 
+    // Codificar los datos del token en base64
+    const encodedTokenData = btoa(JSON.stringify(tokenData));
+
     // Obtener la URL base de la aplicación
     const baseUrl = getBaseUrl(request.url);
 
     // Redirigir al cliente con el token como parámetro de consulta
     return NextResponse.redirect(
-      new URL(`${baseUrl}/?token=${tokenData.access_token}`)
+      new URL(`${baseUrl}/?token=${encodedTokenData}`)
     );
   } catch (error) {
     console.error("Error exchanging code for token:", error);
