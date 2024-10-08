@@ -2,9 +2,14 @@ import { useKeywords } from "@/hooks/useKeywords";
 import { gptQuery } from "@/services/gptApi";
 import { getSearches, getSuggestions } from "@/services/mercadolibreApi";
 import { Status } from "@/types/formsData";
+import {
+  SearchResponse,
+  SuggestionsResponse,
+  TrendsResponse,
+} from "@/types/mercadolibreResponses";
 import { useMutation } from "@tanstack/react-query";
 import { OpenAI } from "openai";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export const useProductTitle = () => {
   const [suggestedTitles, setSuggestedTitles] = useState<string[]>([]);
@@ -24,26 +29,45 @@ export const useProductTitle = () => {
     mutationFn: getSearches,
   });
 
-  useEffect(() => {
-    if (productNameKeywords && searches && imageKeywords) {
-      suggestTitles();
-    }
+  // useEffect(() => {
+  //   if (productNameKeywords && searches && imageKeywords) {
+  //     suggestTitles();
+  //   }
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [productNameKeywords, searches, imageKeywords]);
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [productNameKeywords, searches, imageKeywords]);
 
-  const generateKeywordsAndSuggestedTitles = async (
+  const generateKeywordsSuggestedTitlesAndTrends = async (
     productName: string,
-    imageUrl: string
+    imageUrl: string,
+    siteId: string
   ) => {
     setStatus("loading");
     try {
       // get suggestions and searches by term
-      await Promise.all([
-        mutateSuggestions(productName),
-        mutateSearches(productName),
-        generateKeywordsByImageUrl(imageUrl, productName),
+      const [productNameKeywords, searches, imageKeywords] = await Promise.all([
+        mutateSuggestions({ message: productName, siteId }),
+        mutateSearches({ term: productName, siteId }),
+        generateKeywordsByImageUrl(imageUrl, productName, siteId),
       ]);
+      console.log(productNameKeywords);
+      console.log(searches);
+      console.log(imageKeywords);
+      suggestTitles(productNameKeywords, searches, imageKeywords || []);
+
+      const categoryIds = searches?.results.map((item) => item.category_id);
+      const uniqueCategoryIds = [...new Set(categoryIds)];
+      console.log(uniqueCategoryIds);
+      const trends: TrendsResponse[][] = await Promise.all(
+        uniqueCategoryIds.map((categoryId) =>
+          fetchTrendsByCategory(
+            categoryId,
+            siteId,
+            process.env.NEXT_PUBLIC_MERCADOLIBRE_TOKEN || ""
+          )
+        )
+      );
+      console.log(trends);
       setStatus("success");
     } catch (error) {
       console.log(error);
@@ -51,17 +75,17 @@ export const useProductTitle = () => {
     }
   };
 
-  const suggestTitles = async () => {
+  const suggestTitles = async (
+    productNameKeywords: SuggestionsResponse,
+    searches: SearchResponse,
+    imageKeywords: string[]
+  ) => {
     try {
       const examples = searches?.results.map((item) => item.title).join(", ");
       const values = productNameKeywords?.suggested_queries
         .map((item) => item.q)
         .join(", ");
       const valuesImage = imageKeywords?.join(", ");
-
-      console.log(examples);
-      console.log(productNameKeywords);
-      console.log(valuesImage);
 
       const body: OpenAI.Chat.Completions.ChatCompletionCreateParamsNonStreaming =
         {
@@ -97,6 +121,32 @@ export const useProductTitle = () => {
     }
   };
 
+  const fetchTrendsByCategory = async (
+    categoryId: string,
+    siteId: string,
+    token: string
+  ): Promise<TrendsResponse[]> => {
+    try {
+      const response = await fetch(
+        `https://api.mercadolibre.com/trends/${siteId}/${categoryId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Something went wrong");
+      }
+      const data: TrendsResponse[] = await response.json();
+
+      return data;
+    } catch (error) {
+      throw new Error(error instanceof Error ? error.message : "Unknown error");
+    }
+  };
+
   return {
     productNameKeywords,
     imageKeywords,
@@ -104,6 +154,7 @@ export const useProductTitle = () => {
     suggestedTitles,
     status,
     imageStatus,
-    generateKeywordsAndSuggestedTitles,
+    generateKeywordsSuggestedTitlesAndTrends,
+    fetchTrendsByCategory,
   };
 };

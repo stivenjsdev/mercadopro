@@ -14,6 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import useProductDescription from "@/hooks/useProductDescription";
 import { ImageFormData } from "@/types/formsData";
+import { UserInfo } from "@/types/mercadolibreResponses";
 import { isValidURL } from "@/utils";
 import Image from "next/image";
 import { useState } from "react";
@@ -21,7 +22,13 @@ import { useForm } from "react-hook-form";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
-export default function DescriptionSearch() {
+type DescriptionSearchProps = {
+  userData: UserInfo;
+};
+
+export default function DescriptionSearch({
+  userData,
+}: DescriptionSearchProps) {
   const [url, setUrl] = useState("");
   const [imageError, setImageError] = useState(false);
   const {
@@ -41,7 +48,7 @@ export default function DescriptionSearch() {
     const { productName, url } = formData;
     setUrl(formData.url);
     setImageError(false);
-    generateKeywordsAndSuggestedDescription(productName, url);
+    generateKeywordsAndSuggestedDescription(productName, url, userData.site_id);
     form.reset();
   };
 

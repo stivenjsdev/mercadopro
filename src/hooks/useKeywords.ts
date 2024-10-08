@@ -12,7 +12,11 @@ export const useKeywords = () => {
     mutationFn: getSuggestions,
   });
 
-  const generateKeywordsByImageUrl = async (url: string, productName: string) => {
+  const generateKeywordsByImageUrl = async (
+    url: string,
+    productName: string,
+    siteId: string
+  ): Promise<string[] | undefined> => {
     setStatus("loading");
     try {
       // Define the body of get keywords by image url
@@ -40,7 +44,8 @@ export const useKeywords = () => {
       const { message } = await gptQuery(body);
       if (!message) {
         // setStatus("error");
-        return;
+        const keywords: string[] = [];
+        return keywords;
       }
 
       console.log("useKeywords -> message:", message);
@@ -51,8 +56,14 @@ export const useKeywords = () => {
 
       // Validate keywords
       for (const keyword of unvalidatedKeywords) {
-        const formattedKeyword = keyword.trim().replace(/[.,-]/g, "").toLowerCase();
-        const k = await suggestionsMutation.mutateAsync(formattedKeyword);
+        const formattedKeyword = keyword
+          .trim()
+          .replace(/[.,-]/g, "")
+          .toLowerCase();
+        const k = await suggestionsMutation.mutateAsync({
+          message: formattedKeyword,
+          siteId,
+        });
         if ((k?.suggested_queries ?? []).length > 0) {
           keywords.push(formattedKeyword);
           k?.suggested_queries.forEach((suggested_query) => {
@@ -61,8 +72,12 @@ export const useKeywords = () => {
         }
       }
 
-      setKeywords([...new Set(keywords)]);
+      const uniqueKeywords: string[] =
+        [...new Set(keywords)].length > 0 ? [...new Set(keywords)] : [];
+
+      setKeywords(uniqueKeywords);
       setStatus("success");
+      return uniqueKeywords;
     } catch (error) {
       console.log(error);
       setStatus("error");

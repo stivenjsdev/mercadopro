@@ -114,7 +114,7 @@ const AuthComponent = () => {
         },
       });
       if (response.ok) {
-        const data = await response.json();
+        const data: UserInfo = await response.json();
         console.log(data);
         setUserInfo(data);
       } else {
@@ -180,13 +180,13 @@ const AuthComponent = () => {
             <TabsContent value="title">
               <Suspense fallback={<Skeleton className="h-[200px] w-full" />}>
                 {/* Componente Consulta Titulo*/}
-                <TitleSearch />
+                <TitleSearch userData={userInfo} />
               </Suspense>
             </TabsContent>
             <TabsContent value="description">
               <Suspense fallback={<Skeleton className="h-[200px] w-full" />}>
                 {/* Componente Generar Description */}
-                <DescriptionSearch />
+                <DescriptionSearch userData={userInfo} />
               </Suspense>
             </TabsContent>
           </Tabs>

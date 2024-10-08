@@ -180,31 +180,31 @@ export interface UserInfo {
   registration_identifiers: unknown[];
 }
 
-export interface Address {
+interface Address {
   address: null;
   city: null;
   state: null;
   zip_code: null;
 }
 
-export interface Phone {
+interface Phone {
   area_code: null | string;
   extension: string;
   number: string;
   verified?: boolean;
 }
 
-export interface BillData {
+interface BillData {
   accept_credit_note: null;
 }
 
-export interface BuyerReputation {
+interface BuyerReputation {
   canceled_transactions: number;
   tags: unknown[];
   transactions: BuyerReputationTransactions;
 }
 
-export interface BuyerReputationTransactions {
+interface BuyerReputationTransactions {
   canceled: Canceled;
   completed: null;
   not_yet_rated: NotYetRated;
@@ -213,18 +213,18 @@ export interface BuyerReputationTransactions {
   unrated: Canceled;
 }
 
-export interface Canceled {
+interface Canceled {
   paid: null;
   total: null;
 }
 
-export interface NotYetRated {
+interface NotYetRated {
   paid: null;
   total: null;
   units: null;
 }
 
-export interface Company {
+interface Company {
   brand_name: null;
   city_tax_id: string;
   corporate_name: string;
@@ -234,43 +234,43 @@ export interface Company {
   soft_descriptor: null;
 }
 
-export interface Credit {
+interface Credit {
   consumed: number;
   credit_level_id: string;
   rank: string;
 }
 
-export interface Identification {
+interface Identification {
   number: null;
   type: null;
 }
 
-export interface SellerReputation {
+interface SellerReputation {
   level_id: null;
   power_seller_status: null;
   transactions: SellerReputationTransactions;
   metrics: Metrics;
 }
 
-export interface Metrics {
+interface Metrics {
   sales: Sales;
   claims: Cancellations;
   delayed_handling_time: Cancellations;
   cancellations: Cancellations;
 }
 
-export interface Cancellations {
+interface Cancellations {
   period: string;
   rate: number;
   value: number;
 }
 
-export interface Sales {
+interface Sales {
   period: string;
   completed: number;
 }
 
-export interface SellerReputationTransactions {
+interface SellerReputationTransactions {
   canceled: number;
   completed: number;
   period: string;
@@ -278,13 +278,13 @@ export interface SellerReputationTransactions {
   total: number;
 }
 
-export interface Ratings {
+interface Ratings {
   negative: number;
   neutral: number;
   positive: number;
 }
 
-export interface Status {
+interface Status {
   billing: Billing;
   buy: Buy;
   confirmed_email: boolean;
@@ -300,23 +300,30 @@ export interface Status {
   user_type: string;
 }
 
-export interface Billing {
+interface Billing {
   allow: boolean;
   codes: string[];
 }
 
-export interface Buy {
+interface Buy {
   allow: boolean;
   codes: string[];
   immediate_payment: ImmediatePayment;
 }
 
-export interface ImmediatePayment {
+interface ImmediatePayment {
   reasons: unknown[];
   required: boolean;
 }
 
-export interface ShoppingCart {
+interface ShoppingCart {
   buy: string;
   sell: string;
+}
+
+// ----
+
+export interface TrendsResponse {
+  keyword: string;
+  url: string;
 }

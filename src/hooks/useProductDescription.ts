@@ -15,7 +15,8 @@ export default function useProductDescription() {
 
   const generateKeywordsAndSuggestedDescription = async (
     productName: string,
-    url: string
+    url: string,
+    siteId: string
   ) => {
     setStatus("loading");
     try {
@@ -41,7 +42,7 @@ export default function useProductDescription() {
 
       const [{ message }] = await Promise.all([
         gptQuery(bodyDescription),
-        generateKeywordsByImageUrl(url, productName),
+        generateKeywordsByImageUrl(url, productName, siteId),
       ]);
       if (!message) {
         setStatus("error");

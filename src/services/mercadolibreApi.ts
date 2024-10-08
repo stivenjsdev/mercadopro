@@ -1,12 +1,19 @@
-import { SearchResponse, SuggestionsResponse } from "@/types/mercadolibreResponses";
+import {
+  SearchResponse,
+  SuggestionsResponse,
+} from "@/types/mercadolibreResponses";
 
-export async function getSearches(
-  term: string
-): Promise<SearchResponse> {
+export async function getSearches({
+  term,
+  siteId,
+}: {
+  term: string;
+  siteId: string;
+}): Promise<SearchResponse> {
   try {
     const encodedTerm = encodeURIComponent(term);
     const response = await fetch(
-      `https://api.mercadolibre.com/sites/MCO/search?q=${encodedTerm}&limit=6`
+      `https://api.mercadolibre.com/sites/${siteId}/search?q=${encodedTerm}&limit=6`
     );
 
     if (!response.ok) {
@@ -22,13 +29,17 @@ export async function getSearches(
   }
 }
 
-export async function getSuggestions(
-  message: string
-): Promise<SuggestionsResponse> {
+export async function getSuggestions({
+  message,
+  siteId,
+}: {
+  message: string;
+  siteId: string;
+}): Promise<SuggestionsResponse> {
   try {
     console.log({ message });
     const encodedMessage = encodeURIComponent(message);
-    const url = `https://http2.mlstatic.com/resources/sites/MCO/autosuggest?showFilters=true&limit=6&api_version=2&q=${encodedMessage}`;
+    const url = `https://http2.mlstatic.com/resources/sites/${siteId}/autosuggest?showFilters=true&limit=6&api_version=2&q=${encodedMessage}`;
 
     const response = await fetch(url);
 

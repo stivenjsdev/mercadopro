@@ -13,11 +13,16 @@ import {
 import { Input } from "@/components/ui/input";
 import { useProductTitle } from "@/hooks/useProductTitle";
 import { TermFormData } from "@/types/formsData";
+import { UserInfo } from "@/types/mercadolibreResponses";
 import { isValidURL } from "@/utils";
 import { useForm } from "react-hook-form";
 import { ResultCard } from "../card/ResultCard";
 
-export default function TitleSearch() {
+type TitleSearchProps = {
+  userData: UserInfo;
+};
+
+export default function TitleSearch({ userData }: TitleSearchProps) {
   const {
     productNameKeywords,
     imageKeywords,
@@ -25,7 +30,7 @@ export default function TitleSearch() {
     suggestedTitles,
     status,
     imageStatus,
-    generateKeywordsAndSuggestedTitles,
+    generateKeywordsSuggestedTitlesAndTrends,
   } = useProductTitle();
 
   const form = useForm<TermFormData>({
@@ -35,7 +40,7 @@ export default function TitleSearch() {
 
   const onSubmit = (formData: TermFormData) => {
     const { productName, imageUrl } = formData;
-    generateKeywordsAndSuggestedTitles(productName, imageUrl);
+    generateKeywordsSuggestedTitlesAndTrends(productName, imageUrl, userData.site_id);
     form.reset();
   };
 
