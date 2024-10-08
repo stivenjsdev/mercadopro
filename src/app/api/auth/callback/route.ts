@@ -40,7 +40,7 @@ export async function GET(request: Request) {
   } catch (error) {
     console.error("Error exchanging code for token:", error);
     return NextResponse.json(
-      { error: "Internal server error" },
+      { error: `Internal server error. ${(error as Error).message}` },
       { status: 500 }
     );
   }
