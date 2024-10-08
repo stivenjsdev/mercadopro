@@ -108,7 +108,7 @@ const AuthComponent = () => {
 
   const fetchUserInfo = async (token: string) => {
     try {
-      const response = await fetch(`/api/user/me?token=${token}`)
+      const response = await fetch(`/api/user/me?token=${token}`);
       if (response.ok) {
         const data: UserInfo = await response.json();
         console.log(data);

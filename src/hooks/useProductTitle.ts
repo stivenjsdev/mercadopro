@@ -1,6 +1,10 @@
 import { useKeywords } from "@/hooks/useKeywords";
 import { gptQuery } from "@/services/gptApi";
-import { getSearches, getSuggestions } from "@/services/mercadolibreApi";
+import {
+  getSearches,
+  getSuggestions,
+  getTrends,
+} from "@/services/mercadolibreApi";
 import { Status } from "@/types/formsData";
 import {
   SearchResponse,
@@ -27,6 +31,10 @@ export const useProductTitle = () => {
 
   const { data: searches, mutateAsync: mutateSearches } = useMutation({
     mutationFn: getSearches,
+  });
+
+  const { data: trends, mutateAsync: mutateTrends } = useMutation({
+    mutationFn: getTrends,
   });
 
   // useEffect(() => {
@@ -61,10 +69,13 @@ export const useProductTitle = () => {
       const storedTokenData = localStorage.getItem("MERCADOLIBRE_TOKEN_DATA");
       if (storedTokenData) {
         const tokenData = JSON.parse(storedTokenData);
-        console.log(tokenData.access_token);
         const trends: TrendsResponse[][] = await Promise.all(
           uniqueCategoryIds.map((categoryId) =>
-            fetchTrendsByCategory(categoryId, siteId, tokenData.access_token)
+            mutateTrends({
+              categoryId,
+              siteId,
+              accessToken: tokenData.access_token,
+            })
           )
         );
         console.log(trends);
@@ -122,40 +133,14 @@ export const useProductTitle = () => {
     }
   };
 
-  const fetchTrendsByCategory = async (
-    categoryId: string,
-    siteId: string,
-    token: string
-  ): Promise<TrendsResponse[]> => {
-    try {
-      const response = await fetch(
-        `https://api.mercadolibre.com/trends/${siteId}/${categoryId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Something went wrong");
-      }
-      const data: TrendsResponse[] = await response.json();
-
-      return data;
-    } catch (error) {
-      throw error instanceof Error ? error : new Error("Unknown error");
-    }
-  };
-
   return {
     productNameKeywords,
     imageKeywords,
     searches,
+    trends,
     suggestedTitles,
     status,
     imageStatus,
     generateKeywordsSuggestedTitlesAndTrends,
-    fetchTrendsByCategory,
   };
 };

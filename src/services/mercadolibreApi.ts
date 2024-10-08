@@ -1,6 +1,7 @@
 import {
   SearchResponse,
   SuggestionsResponse,
+  TrendsResponse,
 } from "@/types/mercadolibreResponses";
 
 export async function getSearches({
@@ -54,3 +55,29 @@ export async function getSuggestions({
     throw new Error(error instanceof Error ? error.message : "Unknown error");
   }
 }
+
+export const getTrends = async ({
+  categoryId,
+  siteId,
+  accessToken,
+}: {
+  categoryId: string;
+  siteId: string;
+  accessToken: string;
+}): Promise<TrendsResponse[]> => {
+  try {
+    const response = await fetch(
+      `/api/user/trends?token=${accessToken}&siteId=${siteId}&categoryId=${categoryId}`
+    );
+
+    if (!response.ok) {
+      throw new Error("Error fetching trends");
+    }
+
+    const data: TrendsResponse[] = await response.json();
+
+    return data;
+  } catch (error) {
+    throw error instanceof Error ? error : new Error("Unknown error");
+  }
+};
