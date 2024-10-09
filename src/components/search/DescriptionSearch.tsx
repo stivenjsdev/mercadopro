@@ -145,7 +145,7 @@ export default function DescriptionSearch({
         status={status}
       >
         {description && description.length !== 0 && (
-          <Markdown remarkPlugins={[remarkGfm]} className="space-y-4">
+          <Markdown remarkPlugins={[remarkGfm]} className="space-y-4 descriptionText">
             {description}
           </Markdown>
         )}
