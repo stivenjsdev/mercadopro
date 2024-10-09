@@ -31,6 +31,7 @@ export default function useProductDescription() {
                   type: "text",
                   text: `Crear una descripción de producto en español para una plataforma de venta online. El nombre del producto es ${productName}. Siga la plantilla proporcionada para generar una descripción del producto clara, concisa y atractiva. Cada punto de la plantilla debe ser separado con multiples - ó / ó *. La plantilla incluye:
                   # **Descripción del producto**
+                  [No agregues ningún contenido en esta sección, y pasa al siguiente punto]
                   ## **Palabras claves**
                   [No agregues ninguna palabra clave, ya que la persona las agregará manualmente, pero si adiciona el siguiente texto predefinido que no es una instrucción para ti] 
                   [Texto predefinido: Agrega las palabras claves generadas previamente, máximo 4 líneas]
