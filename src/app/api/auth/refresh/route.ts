@@ -21,7 +21,7 @@ export async function POST(request: Request) {
         },
         body: new URLSearchParams({
           grant_type: "refresh_token",
-          client_id: process.env.MERCADOLIBRE_CLIENT_ID!,
+          client_id: process.env.NEXT_PUBLIC_MERCADOLIBRE_CLIENT_ID!,
           client_secret: process.env.MERCADOLIBRE_CLIENT_SECRET!,
           refresh_token: refresh_token,
         }),
