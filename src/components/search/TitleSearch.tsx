@@ -128,6 +128,20 @@ export default function TitleSearch({ userData }: TitleSearchProps) {
       </ResultCard>
 
       <ResultCard
+        title="Tendencias"
+        description="Estas son las palabras clave más buscadas en ML para tu producto."
+        status={status}
+      >
+        {trends &&
+          trends.length !== 0 &&
+          trends.map((categoryTrends) =>
+            categoryTrends.map((trend, index) => (
+              <p key={`${index}-${trend.keyword}`}>{trend.keyword}</p>
+            ))
+          )}
+      </ResultCard>
+
+      <ResultCard
         title="Búsquedas de Mercadolibre"
         description="Estos son los títulos de los productos encontrados en ML."
         status={status}
@@ -141,20 +155,6 @@ export default function TitleSearch({ userData }: TitleSearchProps) {
               </span>
             </p>
           ))}
-      </ResultCard>
-
-      <ResultCard
-        title="Tendencias"
-        description="Estas son las palabras clave más buscadas en ML para tu producto."
-        status={status}
-      >
-        {trends &&
-          trends.length !== 0 &&
-          trends.map((categoryTrends) =>
-            categoryTrends.map((trend, index) => (
-              <p key={`${index}-${trend.keyword}`}>{trend.keyword}</p>
-            ))
-          )}
       </ResultCard>
 
       <ResultCard
