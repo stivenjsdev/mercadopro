@@ -29,7 +29,30 @@ export default function useProductDescription() {
               content: [
                 {
                   type: "text",
-                  text: `Crear una descripción de producto en español para una plataforma de venta online. El nombre del producto es ${productName}. Siga la plantilla proporcionada para generar una descripción del producto clara, concisa y atractiva. La plantilla incluye: **Palabras clave**: (incluye aquí siempre el siguiente mensaje: [Insertar palabras clave generadas previamente, máximo 4 líneas.] y un ejemplo). **Descripción del producto**: (Generar una descripción completa de las características y ventajas del producto). **Características del producto**: (Destaque las características clave que distinguen al producto). **Especificaciones técnicas**: (Incluya detalles técnicos relevantes, como dimensiones, materiales, certificaciones, etc). **Accesorios del producto**: (Enumere los artículos adicionales incluidos con el producto, por ejemplo, «Caja de regalo de lujo, paño de pulido»). **Política de devoluciones**: (Incluye aquí siempre el siguiente mensaje: [Devoluciones fáciles en 30 días, reembolso completo o cambio (excepto para productos de ropa íntima)]). **Métodos de pago**: (Enumere los métodos de pago aceptados, incluyendo siempre el siguiente mensaje: [Tarjetas de crédito, débito, Mercadopago, Efecty, PSE]). **Preguntas frecuentes**: (Sugiera incluir una sección con preguntas y respuestas frecuentes, que incluya las siguientes preguntas estándar) * P: ¿Se paga contra reembolso? R: No, sólo aceptamos pagos por adelantado. * P: ¿Cuánto tarda en llegar mi pedido? R: En el detalle de tu compra, puedes ver el tiempo estimado de envío a tu localidad (Pero no olvides agregar muchas más preguntas generadas por ti). **Nombre de la empresa**: ({Nombre de la empresa}, con una llamada a la acción). Por favor, asegúrese de que la descripción generada es precisa, concisa y atractiva. Responda directamente con la descripción Separa cada uno de los puntos con multiples - ó / ó *`,
+                  text: `Crear una descripción de producto en español para una plataforma de venta online. El nombre del producto es ${productName}. Siga la plantilla proporcionada para generar una descripción del producto clara, concisa y atractiva. Cada punto de la plantilla debe ser separado con multiples - ó / ó *. La plantilla incluye:
+                  # Descripción del producto
+                  ## Palabras claves
+                  [Texto predefinido: Agrega las palabras claves generadas previamente, máximo 4 líneas]
+                  ## Descripción del producto
+                  [Genera una descripción completa de las características, ventajas y beneficios del producto]
+                  ## Características del producto
+                  [Destaque las características más importantes y claves que distinguen al producto]
+                  ## Especificaciones técnicas
+                  [Incluya las especificaciones y detalles técnicos más relevantes del producto, como dimensiones, materiales, peso, certificaciones, etc.]
+                  ## Accesorios del producto
+                  [Enumere los accesorios, complementos, artículos adicionales o productos relacionados que se incluyen con la compra]
+                  ## Políticas de devolución
+                  [Describa las políticas de devolución, garantía, cambios y reembolso aplicables al producto]
+                  [Texto predefinido: Devoluciones fáciles en 30 días, reembolso completo o cambio (excepto para productos de ropa íntima)]
+                  ## Métodos de pago
+                  [Enumere los métodos de pago aceptados]
+                  [Texto predefinido: Aceptamos tarjetas de crédito, débito, Mercadopago, Efecty y PSE]
+                  ## Preguntas frecuentes
+                  [Texto predefinido: P: ¿Se paga contra reembolso? R: No, sólo aceptamos pagos por adelantado.]
+                  [Texto predefinido: P: ¿Cuánto tarda en llegar mi pedido? R: En el detalle de tu compra, puedes ver el tiempo estimado de envío a tu localidad.]
+                  [Además de lsa anteriores, Enumere las preguntas frecuentes más comunes y sus respuestas]
+                  ## Nombre de empresa
+                  [Ligera presentación de la empresa, permitiendo un espacio de inserte nombre de empresa aquí, y termine con una llamada a la acción].`,
                 },
                 {
                   type: "image_url",
