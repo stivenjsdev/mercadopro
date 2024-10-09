@@ -59,14 +59,12 @@ export const useProductTitle = () => {
         mutateSearches({ term: productName, siteId }),
         generateKeywordsByImageUrl(imageUrl, productName, siteId),
       ]);
-      console.log(productNameKeywords);
-      console.log(searches);
-      console.log(imageKeywords);
+
       suggestTitles(productNameKeywords, searches, imageKeywords || []);
 
       const categoryIds = searches?.results.map((item) => item.category_id);
       const uniqueCategoryIds = [...new Set(categoryIds)];
-      console.log(uniqueCategoryIds);
+      console.log("categorías encontradas: ", uniqueCategoryIds);
       const storedTokenData = localStorage.getItem("MERCADOLIBRE_TOKEN_DATA");
       if (storedTokenData) {
         const tokenData = JSON.parse(storedTokenData);
@@ -79,7 +77,6 @@ export const useProductTitle = () => {
             })
           )
         );
-        console.log(trends);
         setTrends(trends);
       }
       setStatus("success");
@@ -129,7 +126,6 @@ export const useProductTitle = () => {
       // Parse keywords json response message to array
       const titles: string[] = message.split(", ");
       setSuggestedTitles([...new Set(titles)]);
-      console.log("suggestTitles -> success");
     } catch (error) {
       throw error;
     }

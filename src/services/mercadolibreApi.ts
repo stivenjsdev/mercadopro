@@ -38,7 +38,6 @@ export async function getSuggestions({
   siteId: string;
 }): Promise<SuggestionsResponse> {
   try {
-    console.log({ message });
     const encodedMessage = encodeURIComponent(message);
     const url = `https://http2.mlstatic.com/resources/sites/${siteId}/autosuggest?showFilters=true&limit=6&api_version=2&q=${encodedMessage}`;
 

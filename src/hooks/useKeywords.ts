@@ -48,7 +48,7 @@ export const useKeywords = () => {
         return keywords;
       }
 
-      console.log("useKeywords -> message:", message);
+      console.log("palabras claves generadas por openai: ", message);
       // Parse keywords json response message to array
       const unvalidatedKeywords: string[] = message.split(", ");
       // Validated keywords arr
@@ -74,6 +74,8 @@ export const useKeywords = () => {
 
       const uniqueKeywords: string[] =
         [...new Set(keywords)].length > 0 ? [...new Set(keywords)] : [];
+
+      console.log("palabras claves validadas: ", uniqueKeywords);
 
       setKeywords(uniqueKeywords);
       setStatus("success");
