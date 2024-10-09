@@ -38,14 +38,6 @@ export const useProductTitle = () => {
     mutationFn: getTrends,
   });
 
-  // useEffect(() => {
-  //   if (productNameKeywords && searches && imageKeywords) {
-  //     suggestTitles();
-  //   }
-
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [productNameKeywords, searches, imageKeywords]);
-
   const generateKeywordsSuggestedTitlesAndTrends = async (
     productName: string,
     imageUrl: string,
@@ -122,7 +114,6 @@ export const useProductTitle = () => {
         throw new Error("No message in response");
       }
 
-      console.log(message);
       // Parse keywords json response message to array
       const titles: string[] = message.split(", ");
       setSuggestedTitles([...new Set(titles)]);

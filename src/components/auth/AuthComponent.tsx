@@ -162,7 +162,7 @@ const AuthComponent = () => {
       ) : userInfo ? (
         <>
           <h2 className="text-sm font-light text-center">
-            Bienvenido {userInfo.first_name} {userInfo.last_name}
+            {userInfo.first_name} {userInfo.last_name}
           </h2>
           <Tabs defaultValue="title" className="w-full">
             <TabsList className="w-full flex flex-row">

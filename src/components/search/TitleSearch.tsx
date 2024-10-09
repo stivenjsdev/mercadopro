@@ -109,7 +109,9 @@ export default function TitleSearch({ userData }: TitleSearchProps) {
         status={status}
       >
         {productNameKeywords &&
-          productNameKeywords.suggested_queries.map(
+          productNameKeywords.suggested_queries &&
+          productNameKeywords.suggested_queries.length > 0 &&
+          [...new Set(productNameKeywords.suggested_queries)].map(
             (suggested_query, index) => <p key={index}>{suggested_query.q}</p>
           )}
       </ResultCard>
