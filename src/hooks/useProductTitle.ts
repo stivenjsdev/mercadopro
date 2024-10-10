@@ -148,7 +148,7 @@ export const useProductTitle = () => {
             },
             {
               role: "user",
-              content: `2 títulos, para crear los títulos, solo ve adicionando todas las palabras claves que te doy, generando varias combinaciones coherentes y concisas y comenzando siempre por el nombre del producto, palabras claves:[${
+              content: `4 títulos, para crear los títulos, solo ve adicionando todas las palabras claves que te doy, generando varias combinaciones coherentes y concisas y comenzando siempre por el nombre del producto, palabras claves:[${
                 values ? ` ${values}, ` : ""
               } ${valuesImage} ${valuesTrends}]. El último título debe ser una combinación de todas las palabras claves. La anterior lista de palabras claves pueden contener palabras claves que no representan en absoluto al producto **${productName}**, por favor, identifica cuales si, y utilízalas para los títulos generados. Procura que el titulo generado no tenga palabras repetidas, como por ejemplo si tenemos las palabras claves [peluche gato], [peluche gato lucifer], [peluche gato original] No generes un titulo asi: [peluche gato peluche gato lucifer peluche gato original] si no asi: [peluche gato lucifer original]. Utiliza la mayor cantidad de palabras claves para cada título.`,
             },
