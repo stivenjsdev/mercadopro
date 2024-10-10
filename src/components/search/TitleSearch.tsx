@@ -168,7 +168,7 @@ export default function TitleSearch({ userData }: TitleSearchProps) {
         {categories &&
           categories.length !== 0 &&
           categories.map((category) => (
-            <p key={category.id}>
+            <p key={category.id} className="p-3">
               {category.path_from_root.map((path) => path.name).join(" > ")}
             </p>
           ))}
