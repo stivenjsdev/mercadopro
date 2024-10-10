@@ -154,6 +154,7 @@ export const useProductTitle = () => {
       }
 
       // Parse keywords json response message to array
+      console.log("títulos generados: ", message);
       const titles: string[] = message.split(", ");
       setSuggestedTitles([...new Set(titles)]);
     } catch (error) {
