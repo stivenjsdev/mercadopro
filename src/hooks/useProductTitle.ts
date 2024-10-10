@@ -19,6 +19,8 @@ export const useProductTitle = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [productNameKeywordsStatus, setProductNameKeywordsStatus] =
     useState<Status>("success");
+  const [trendsStatus, setTrendsStatus] = useState<Status>("success");
+  const [categoriesStatus, setCategoriesStatus] = useState<Status>("success");
   const [status, setStatus] = useState<Status>("success");
   const {
     keywords: imageKeywords,
@@ -49,6 +51,7 @@ export const useProductTitle = () => {
   ) => {
     setStatus("loading");
     setProductNameKeywordsStatus("loading");
+    setTrendsStatus("loading");
     try {
       // get keywords from product name
       const splitProductName = productName
@@ -79,6 +82,7 @@ export const useProductTitle = () => {
       );
       console.log("categories data: ", categories);
       setCategories(categories);
+      setCategoriesStatus("success");
       const storedTokenData = localStorage.getItem("MERCADOLIBRE_TOKEN_DATA");
       if (storedTokenData) {
         const tokenData = JSON.parse(storedTokenData);
@@ -92,6 +96,7 @@ export const useProductTitle = () => {
           )
         );
         setTrends(trends);
+        setTrendsStatus("success");
         suggestTitles(
           productName,
           productNameKeywordsUnique || [],
@@ -103,6 +108,9 @@ export const useProductTitle = () => {
     } catch (error) {
       console.log(error);
       setStatus("error");
+      setProductNameKeywordsStatus("success");
+      setTrendsStatus("success");
+      setCategoriesStatus("success");
     }
   };
 
@@ -134,7 +142,7 @@ export const useProductTitle = () => {
               role: "user",
               content: `10 títulos, palabras claves:[${
                 values ? ` ${values}, ` : ""
-              } ${valuesImage} ${valuesTrends}]. La anterior lista de palabras claves pueden contener palabras claves que no representan en absoluto al producto **${productName}**, por favor, identifica cuales si, y utilízalas para los 10 títulos generados. Utiliza la mayor cantidad de palabras claves que puedas por título.`,
+              } ${valuesImage} ${valuesTrends}]. La anterior lista de palabras claves pueden contener palabras claves que no representan en absoluto al producto **${productName}**, por favor, identifica cuales si, y utilízalas para los 10 títulos generados. Utiliza la mayor cantidad de palabras claves sin repetir que puedas por título.`,
             },
           ],
         };
@@ -161,6 +169,8 @@ export const useProductTitle = () => {
     categories,
     suggestedTitles,
     productNameKeywordsStatus,
+    trendsStatus,
+    categoriesStatus,
     status,
     imageStatus,
     generateKeywordsSuggestedTitlesAndTrends,

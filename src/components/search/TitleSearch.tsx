@@ -31,6 +31,8 @@ export default function TitleSearch({ userData }: TitleSearchProps) {
     categories,
     suggestedTitles,
     productNameKeywordsStatus,
+    trendsStatus,
+    categoriesStatus,
     status,
     imageStatus,
     generateKeywordsSuggestedTitlesAndTrends,
@@ -131,7 +133,7 @@ export default function TitleSearch({ userData }: TitleSearchProps) {
       <ResultCard
         title="Tendencias"
         description="Estas son las búsquedas más populares, ordenadas de la mayor a la menor solicitada."
-        status={status}
+        status={trendsStatus}
       >
         {trends &&
           trends.length !== 0 &&
@@ -161,7 +163,7 @@ export default function TitleSearch({ userData }: TitleSearchProps) {
       <ResultCard
         title="Categorías"
         description="Estas son las categorías encontradas en las búsquedas."
-        status={status}
+        status={categoriesStatus}
       >
         {categories &&
           categories.length !== 0 &&
