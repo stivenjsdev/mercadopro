@@ -150,12 +150,10 @@ export default function TitleSearch({ userData }: TitleSearchProps) {
       >
         {searches &&
           searches.results.map((result) => (
-            <p key={result.id} className="py-2">
-              {result.title}{" "}
-              <span className="text-xs">
-                ({result.title.length} caracteres)
-              </span>
-            </p>
+            <div key={result.id} className="p-3">
+              <p>{result.title} </p>
+              <p className="text-xs">({result.title.length} caracteres)</p>
+            </div>
           ))}
       </ResultCard>
 
@@ -169,7 +167,7 @@ export default function TitleSearch({ userData }: TitleSearchProps) {
           suggestedTitles.map((title, index) => {
             if (title)
               return (
-                <div className="p-3" key={index}>
+                <div key={index} className="p-3">
                   <p>{title.trim()} </p>
                   <p className="text-xs">({title.length} caracteres)</p>
                 </div>
