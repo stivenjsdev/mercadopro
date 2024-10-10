@@ -64,6 +64,7 @@ export const useProductTitle = () => {
       const categories = await Promise.all(
         uniqueCategoryIds.map((categoryId) => mutateCategories({ categoryId }))
       );
+      console.log("categories data: ", categories);
       setCategories(categories);
       const storedTokenData = localStorage.getItem("MERCADOLIBRE_TOKEN_DATA");
       if (storedTokenData) {
