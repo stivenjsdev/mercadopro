@@ -31,6 +31,7 @@ export default function TitleSearch({ userData }: TitleSearchProps) {
     categories,
     suggestedTitles,
     productNameKeywordsStatus,
+    searchesStatus,
     trendsStatus,
     categoriesStatus,
     status,
@@ -149,7 +150,7 @@ export default function TitleSearch({ userData }: TitleSearchProps) {
       <ResultCard
         title="Búsquedas de Mercadolibre"
         description="Estos son los títulos de los productos encontrados en ML."
-        status={status}
+        status={searchesStatus}
       >
         {searches &&
           searches.results.map((result) => (

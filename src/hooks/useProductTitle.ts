@@ -7,7 +7,11 @@ import {
   getTrends,
 } from "@/services/mercadolibreApi";
 import { Status } from "@/types/formsData";
-import { Category, TrendsResponse } from "@/types/mercadolibreResponses";
+import {
+  Category,
+  SearchResponse,
+  TrendsResponse,
+} from "@/types/mercadolibreResponses";
 import { useMutation } from "@tanstack/react-query";
 import { OpenAI } from "openai";
 import { useState } from "react";
@@ -15,12 +19,14 @@ import { useState } from "react";
 export const useProductTitle = () => {
   const [suggestedTitles, setSuggestedTitles] = useState<string[]>([]);
   const [productNameKeywords, setProductNameKeywords] = useState<string[]>();
+  const [searches, setSearches] = useState<SearchResponse>();
   const [trends, setTrends] = useState<TrendsResponse[][]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [productNameKeywordsStatus, setProductNameKeywordsStatus] =
     useState<Status>("success");
   const [trendsStatus, setTrendsStatus] = useState<Status>("success");
   const [categoriesStatus, setCategoriesStatus] = useState<Status>("success");
+  const [searchesStatus, setSearchesStatus] = useState<Status>("success");
   const [status, setStatus] = useState<Status>("success");
   const {
     keywords: imageKeywords,
@@ -32,7 +38,7 @@ export const useProductTitle = () => {
     mutationFn: getSuggestions,
   });
 
-  const { data: searches, mutateAsync: mutateSearches } = useMutation({
+  const { mutateAsync: mutateSearches } = useMutation({
     mutationFn: getSearches,
   });
 
@@ -73,6 +79,8 @@ export const useProductTitle = () => {
         mutateSearches({ term: productName, siteId }),
         generateKeywordsByImageUrl(imageUrl, productName, siteId),
       ]);
+      setSearches(searches);
+      setSearchesStatus("success");
 
       const categoryIds = searches?.results.map((item) => item.category_id);
       const uniqueCategoryIds = [...new Set(categoryIds)];
@@ -173,6 +181,7 @@ export const useProductTitle = () => {
     productNameKeywordsStatus,
     trendsStatus,
     categoriesStatus,
+    searchesStatus,
     status,
     imageStatus,
     generateKeywordsSuggestedTitlesAndTrends,
