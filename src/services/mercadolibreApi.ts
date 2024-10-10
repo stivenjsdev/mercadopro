@@ -1,4 +1,5 @@
 import {
+  Category,
   SearchResponse,
   SuggestionsResponse,
   TrendsResponse,
@@ -74,6 +75,26 @@ export const getTrends = async ({
     }
 
     const data: TrendsResponse[] = await response.json();
+
+    return data;
+  } catch (error) {
+    throw error instanceof Error ? error : new Error("Unknown error");
+  }
+};
+
+export const getCategoryById = async ({
+  categoryId,
+}: {
+  categoryId: string;
+}) => {
+  try {
+    const response = await fetch("/api/user/categories/" + categoryId);
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw errorData || new Error("Failed to fetch category data");
+    }
+
+    const data: Category = await response.json();
 
     return data;
   } catch (error) {

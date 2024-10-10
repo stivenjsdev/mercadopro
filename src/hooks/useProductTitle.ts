@@ -1,14 +1,16 @@
 import { useKeywords } from "@/hooks/useKeywords";
 import { gptQuery } from "@/services/gptApi";
 import {
+  getCategoryById,
   getSearches,
   getSuggestions,
   getTrends,
 } from "@/services/mercadolibreApi";
 import { Status } from "@/types/formsData";
 import {
+  Category,
   SuggestionsResponse,
-  TrendsResponse
+  TrendsResponse,
 } from "@/types/mercadolibreResponses";
 import { useMutation } from "@tanstack/react-query";
 import { OpenAI } from "openai";
@@ -17,6 +19,7 @@ import { useState } from "react";
 export const useProductTitle = () => {
   const [suggestedTitles, setSuggestedTitles] = useState<string[]>([]);
   const [trends, setTrends] = useState<TrendsResponse[][]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [status, setStatus] = useState<Status>("success");
   const {
     keywords: imageKeywords,
@@ -37,6 +40,10 @@ export const useProductTitle = () => {
     mutationFn: getTrends,
   });
 
+  const { mutateAsync: mutateCategories } = useMutation({
+    mutationFn: getCategoryById,
+  });
+
   const generateKeywordsSuggestedTitlesAndTrends = async (
     productName: string,
     imageUrl: string,
@@ -51,10 +58,13 @@ export const useProductTitle = () => {
         generateKeywordsByImageUrl(imageUrl, productName, siteId),
       ]);
 
-      
       const categoryIds = searches?.results.map((item) => item.category_id);
       const uniqueCategoryIds = [...new Set(categoryIds)];
       console.log("categorías encontradas: ", uniqueCategoryIds);
+      const categories = await Promise.all(
+        uniqueCategoryIds.map((categoryId) => mutateCategories({ categoryId }))
+      );
+      setCategories(categories);
       const storedTokenData = localStorage.getItem("MERCADOLIBRE_TOKEN_DATA");
       if (storedTokenData) {
         const tokenData = JSON.parse(storedTokenData);
@@ -89,9 +99,9 @@ export const useProductTitle = () => {
       const valuesImage = imageKeywords?.join(", ");
       const valuesTrends = trends
         .flat()
-        .map(obj => obj.keyword)
-        .join(', ');
-      console.log("valuesTrends: ", valuesTrends); 
+        .map((obj) => obj.keyword)
+        .join(", ");
+      console.log("valuesTrends: ", valuesTrends);
 
       const body: OpenAI.Chat.Completions.ChatCompletionCreateParamsNonStreaming =
         {
@@ -130,6 +140,7 @@ export const useProductTitle = () => {
     imageKeywords,
     searches,
     trends,
+    categories,
     suggestedTitles,
     status,
     imageStatus,

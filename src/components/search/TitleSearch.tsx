@@ -28,6 +28,7 @@ export default function TitleSearch({ userData }: TitleSearchProps) {
     imageKeywords,
     searches,
     trends,
+    categories,
     suggestedTitles,
     status,
     imageStatus,
@@ -154,6 +155,18 @@ export default function TitleSearch({ userData }: TitleSearchProps) {
               <p>{result.title} </p>
               <p className="text-xs">({result.title.length} caracteres)</p>
             </div>
+          ))}
+      </ResultCard>
+
+      <ResultCard
+        title="Categorías"
+        description="Estas son las categorías encontradas en las búsquedas."
+        status={status}
+      >
+        {categories &&
+          categories.length !== 0 &&
+          categories.map((category) => (
+            <p key={category.id}>{category.name}</p>
           ))}
       </ResultCard>
 
