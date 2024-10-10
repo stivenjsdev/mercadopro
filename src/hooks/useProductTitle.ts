@@ -104,9 +104,9 @@ export const useProductTitle = () => {
             },
             {
               role: "user",
-              content: `10 títulos, palabras claves:${
+              content: `10 títulos, palabras claves:[${
                 values ? ` ${values}, ` : ""
-              } ${valuesImage}. La siguiente lista de palabras claves pueden contener palabras claves que no representan en absoluto al producto, por favor, identifica cuales si, y utilízalas para los 10 títulos generados ${valuesTrends}.`,
+              } ${valuesImage}]. La siguiente lista de palabras claves pueden contener palabras claves que no representan en absoluto al producto, por favor, identifica cuales si, y utilízalas para los 10 títulos generados: [${valuesTrends}]. Utiliza la mayor cantidad de palabras claves que puedas por título.`,
             },
           ],
         };
