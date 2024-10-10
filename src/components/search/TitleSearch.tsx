@@ -119,7 +119,7 @@ export default function TitleSearch({ userData }: TitleSearchProps) {
 
       <ResultCard
         title="Palabras claves por imagen de producto"
-        description="Estas son las sugerencias de búsqueda generadas por ML."
+        description="Estas son las palabras claves generadas por inteligencia artificial a partir de la imagen otorgada."
         status={imageStatus}
       >
         {imageKeywords &&
