@@ -23,7 +23,7 @@ export async function GET(request: Request, { params }: { params: Params }) {
       throw new Error("Failed to fetch category data");
     }
     const category = await response.json();
-    return Response.json({ category });
+    return Response.json(category);
   } catch (error) {
     console.error("Error fetching users:", error);
     return Response.json({ error: "Failed to fetch users" }, { status: 500 });
