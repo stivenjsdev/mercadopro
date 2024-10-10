@@ -30,6 +30,7 @@ export default function TitleSearch({ userData }: TitleSearchProps) {
     trends,
     categories,
     suggestedTitles,
+    productNameKeywordsStatus,
     status,
     imageStatus,
     generateKeywordsSuggestedTitlesAndTrends,
@@ -107,14 +108,13 @@ export default function TitleSearch({ userData }: TitleSearchProps) {
       <ResultCard
         title="Palabras claves por nombre de producto"
         description="Estas son las sugerencias de búsqueda generadas por ML."
-        status={status}
+        status={productNameKeywordsStatus}
       >
         {productNameKeywords &&
-          productNameKeywords.suggested_queries &&
-          productNameKeywords.suggested_queries.length > 0 &&
-          [...new Set(productNameKeywords.suggested_queries)].map(
-            (suggested_query, index) => <p key={index}>{suggested_query.q}</p>
-          )}
+          productNameKeywords.length > 0 &&
+          productNameKeywords.map((productNameKeyword, index) => (
+            <p key={index + productNameKeyword}>{productNameKeyword}</p>
+          ))}
       </ResultCard>
 
       <ResultCard

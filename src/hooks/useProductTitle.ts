@@ -7,19 +7,18 @@ import {
   getTrends,
 } from "@/services/mercadolibreApi";
 import { Status } from "@/types/formsData";
-import {
-  Category,
-  SuggestionsResponse,
-  TrendsResponse,
-} from "@/types/mercadolibreResponses";
+import { Category, TrendsResponse } from "@/types/mercadolibreResponses";
 import { useMutation } from "@tanstack/react-query";
 import { OpenAI } from "openai";
 import { useState } from "react";
 
 export const useProductTitle = () => {
   const [suggestedTitles, setSuggestedTitles] = useState<string[]>([]);
+  const [productNameKeywords, setProductNameKeywords] = useState<string[]>();
   const [trends, setTrends] = useState<TrendsResponse[][]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [productNameKeywordsStatus, setProductNameKeywordsStatus] =
+    useState<Status>("success");
   const [status, setStatus] = useState<Status>("success");
   const {
     keywords: imageKeywords,
@@ -27,10 +26,9 @@ export const useProductTitle = () => {
     generateKeywordsByImageUrl,
   } = useKeywords();
 
-  const { data: productNameKeywords, mutateAsync: mutateSuggestions } =
-    useMutation({
-      mutationFn: getSuggestions,
-    });
+  const { mutateAsync: mutateSuggestions } = useMutation({
+    mutationFn: getSuggestions,
+  });
 
   const { data: searches, mutateAsync: mutateSearches } = useMutation({
     mutationFn: getSearches,
@@ -50,10 +48,25 @@ export const useProductTitle = () => {
     siteId: string
   ) => {
     setStatus("loading");
+    setProductNameKeywordsStatus("loading");
     try {
-      // get suggestions and searches by term
-      const [productNameKeywords, searches, imageKeywords] = await Promise.all([
-        mutateSuggestions({ message: productName, siteId }),
+      // get keywords from product name
+      const splitProductName = productName
+        .split(" ")
+        .map((_, i, arr) => arr.slice(0, arr.length - i).join(" "));
+      const productNameKeywords = await Promise.all(
+        splitProductName.map((term) =>
+          mutateSuggestions({ message: term, siteId })
+        )
+      );
+      const productNameKeywordsFlat = productNameKeywords.flatMap(
+        (suggestion) => suggestion.suggested_queries.map((sq) => sq.q)
+      );
+      const productNameKeywordsUnique = [...new Set(productNameKeywordsFlat)];
+      setProductNameKeywords(productNameKeywordsUnique);
+      setProductNameKeywordsStatus("success");
+      // get searches and keywords from image
+      const [searches, imageKeywords] = await Promise.all([
         mutateSearches({ term: productName, siteId }),
         generateKeywordsByImageUrl(imageUrl, productName, siteId),
       ]);
@@ -79,7 +92,12 @@ export const useProductTitle = () => {
           )
         );
         setTrends(trends);
-        suggestTitles(productNameKeywords || [], imageKeywords || [], trends);
+        suggestTitles(
+          productName,
+          productNameKeywordsUnique || [],
+          imageKeywords || [],
+          trends
+        );
       }
       setStatus("success");
     } catch (error) {
@@ -89,14 +107,13 @@ export const useProductTitle = () => {
   };
 
   const suggestTitles = async (
-    productNameKeywords: SuggestionsResponse,
+    productName: string,
+    productNameKeywords: string[],
     imageKeywords: string[],
     trends: TrendsResponse[][]
   ) => {
     try {
-      const values = [...new Set(productNameKeywords.suggested_queries)]
-        .map((item) => item.q)
-        .join(", ");
+      const values = productNameKeywords?.join(", ");
       const valuesImage = imageKeywords?.join(", ");
       const valuesTrends = trends
         .flat()
@@ -117,7 +134,7 @@ export const useProductTitle = () => {
               role: "user",
               content: `10 títulos, palabras claves:[${
                 values ? ` ${values}, ` : ""
-              } ${valuesImage}]. La siguiente lista de palabras claves pueden contener palabras claves que no representan en absoluto al producto, por favor, identifica cuales si, y utilízalas para los 10 títulos generados: [${valuesTrends}]. Utiliza la mayor cantidad de palabras claves que puedas por título.`,
+              } ${valuesImage} ${valuesTrends}]. La anterior lista de palabras claves pueden contener palabras claves que no representan en absoluto al producto **${productName}**, por favor, identifica cuales si, y utilízalas para los 10 títulos generados. Utiliza la mayor cantidad de palabras claves que puedas por título.`,
             },
           ],
         };
@@ -143,6 +160,7 @@ export const useProductTitle = () => {
     trends,
     categories,
     suggestedTitles,
+    productNameKeywordsStatus,
     status,
     imageStatus,
     generateKeywordsSuggestedTitlesAndTrends,
