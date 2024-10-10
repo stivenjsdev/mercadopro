@@ -7,9 +7,8 @@ import {
 } from "@/services/mercadolibreApi";
 import { Status } from "@/types/formsData";
 import {
-  SearchResponse,
   SuggestionsResponse,
-  TrendsResponse,
+  TrendsResponse
 } from "@/types/mercadolibreResponses";
 import { useMutation } from "@tanstack/react-query";
 import { OpenAI } from "openai";
@@ -52,8 +51,7 @@ export const useProductTitle = () => {
         generateKeywordsByImageUrl(imageUrl, productName, siteId),
       ]);
 
-      suggestTitles(productNameKeywords, searches, imageKeywords || []);
-
+      
       const categoryIds = searches?.results.map((item) => item.category_id);
       const uniqueCategoryIds = [...new Set(categoryIds)];
       console.log("categorías encontradas: ", uniqueCategoryIds);
@@ -70,6 +68,7 @@ export const useProductTitle = () => {
           )
         );
         setTrends(trends);
+        suggestTitles(productNameKeywords || [], imageKeywords || [], trends);
       }
       setStatus("success");
     } catch (error) {
@@ -80,15 +79,19 @@ export const useProductTitle = () => {
 
   const suggestTitles = async (
     productNameKeywords: SuggestionsResponse,
-    searches: SearchResponse,
-    imageKeywords: string[]
+    imageKeywords: string[],
+    trends: TrendsResponse[][]
   ) => {
     try {
-      const examples = searches?.results.map((item) => item.title).join(", ");
-      const values = productNameKeywords?.suggested_queries
+      const values = [...new Set(productNameKeywords.suggested_queries)]
         .map((item) => item.q)
         .join(", ");
       const valuesImage = imageKeywords?.join(", ");
+      const valuesTrends = trends
+        .flat()
+        .map(obj => obj.keyword)
+        .join(', ');
+      console.log("valuesTrends: ", valuesTrends); 
 
       const body: OpenAI.Chat.Completions.ChatCompletionCreateParamsNonStreaming =
         {
@@ -103,7 +106,7 @@ export const useProductTitle = () => {
               role: "user",
               content: `10 títulos, palabras claves:${
                 values ? ` ${values}, ` : ""
-              } ${valuesImage}. Ejemplos de títulos de ese producto o similares: ${examples}`,
+              } ${valuesImage}. La siguiente lista de palabras claves pueden contener palabras claves que no representan en absoluto al producto, por favor, identifica cuales si, y utilízalas para los 10 títulos generados ${valuesTrends}.`,
             },
           ],
         };
