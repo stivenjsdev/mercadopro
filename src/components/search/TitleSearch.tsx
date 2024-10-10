@@ -137,7 +137,7 @@ export default function TitleSearch({ userData }: TitleSearchProps) {
           trends.map((categoryTrends) =>
             categoryTrends.map((trend, index) => (
               <p key={`${index}-${trend.keyword}`}>
-                {index + 1}.{trend.keyword}
+                {index + 1}. {trend.keyword}
               </p>
             ))
           )}
