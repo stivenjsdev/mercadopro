@@ -38,11 +38,11 @@ export function ResultCard({
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Error</CardTitle>
+          <CardTitle>Error: {title}</CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-red-500">
-            Se produjo un error al procesar la imagen. Inténtalo nuevamente.
+            Se produjo un error al procesar la información. Por favor inténtalo nuevamente.
           </p>
         </CardContent>
       </Card>
