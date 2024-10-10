@@ -50,7 +50,7 @@ export default function useProductDescription() {
                   ## **Preguntas frecuentes**
                   [Texto predefinido: P: ¿Se paga contra reembolso? R: No, sólo aceptamos pagos por adelantado.]
                   [Texto predefinido: P: ¿Cuánto tarda en llegar mi pedido? R: En el detalle de tu compra, puedes ver el tiempo estimado de envío a tu localidad.]
-                  [Además de lsa anteriores, Enumere las preguntas frecuentes más comunes y sus respuestas]
+                  [Además de lsa anteriores, Genere y Enumere más de 2 preguntas frecuentes y sus respuestas]
                   ## **Nombre de empresa**
                   [Ligera presentación de la empresa, permitiendo un espacio de Inserte nombre de empresa, y termine con una llamada a la acción].`,
                 },
