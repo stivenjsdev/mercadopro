@@ -27,6 +27,7 @@ export async function getSearches({
 
     return data;
   } catch (error) {
+    console.log(error);
     throw new Error(error instanceof Error ? error.message : "Unknown error");
   }
 }
@@ -52,6 +53,7 @@ export async function getSuggestions({
     const data: SuggestionsResponse = await response.json();
     return data;
   } catch (error) {
+    console.log(error);
     throw new Error(error instanceof Error ? error.message : "Unknown error");
   }
 }
@@ -78,6 +80,7 @@ export const getTrends = async ({
 
     return data;
   } catch (error) {
+    console.log(error);
     throw error instanceof Error ? error : new Error("Unknown error");
   }
 };
@@ -98,6 +101,7 @@ export const getCategoryById = async ({
 
     return data;
   } catch (error) {
+    console.log(error);
     throw error instanceof Error ? error : new Error("Unknown error");
   }
 };

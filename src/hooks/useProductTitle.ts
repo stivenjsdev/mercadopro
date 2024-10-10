@@ -157,6 +157,7 @@ export const useProductTitle = () => {
       const titles: string[] = message.split(", ");
       setSuggestedTitles([...new Set(titles)]);
     } catch (error) {
+      console.log(error);
       throw error;
     }
   };
