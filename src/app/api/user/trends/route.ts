@@ -20,6 +20,13 @@ export async function GET(request: Request) {
       }
     );
 
+    if (response.status === 404) {
+      return Response.json(
+        { error: `Trend with category id ${categoryId} not found` },
+        { status: 404 }
+      );
+    }
+
     console.log(response.status);
     if (!response.ok) {
       const errorData = await response.text();
