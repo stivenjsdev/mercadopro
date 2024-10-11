@@ -73,7 +73,8 @@ export const getTrends = async ({
     );
 
     if (!response.ok) {
-      throw new Error("Error fetching trends");
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Something went wrong fetching trends");
     }
 
     const data: TrendsResponse[] = await response.json();
@@ -94,7 +95,7 @@ export const getCategoryById = async ({
     const response = await fetch("/api/user/categories/" + categoryId);
     if (!response.ok) {
       const errorData = await response.json();
-      throw errorData || new Error("Failed to fetch category data");
+      throw new Error(errorData.error || "Something went wrong fetching category");
     }
 
     const data: Category = await response.json();

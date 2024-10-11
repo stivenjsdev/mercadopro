@@ -85,20 +85,16 @@ export const useProductTitle = () => {
       const categoryIds = searches?.results.map((item) => item.category_id);
       const uniqueCategoryIds = [...new Set(categoryIds)];
       console.log("categorías encontradas: ", uniqueCategoryIds);
-      const categories = await Promise.allSettled(
+      const categories = await Promise.all(
         uniqueCategoryIds.map((categoryId) => mutateCategories({ categoryId }))
       );
       console.log("categories data: ", categories);
-      categories.forEach((category) => {
-        if (category.status === "fulfilled") {
-          setCategories((prev) => [...prev, category.value]);
-        }
-      });
+      setCategories(categories);
       setCategoriesStatus("success");
       const storedTokenData = localStorage.getItem("MERCADOLIBRE_TOKEN_DATA");
       if (storedTokenData) {
         const tokenData = JSON.parse(storedTokenData);
-        const trends: TrendsResponse[][] = await Promise.all(
+        const trends = await Promise.allSettled(
           uniqueCategoryIds.map((categoryId) =>
             mutateTrends({
               categoryId,
@@ -107,13 +103,18 @@ export const useProductTitle = () => {
             })
           )
         );
-        setTrends(trends);
+        const fullFilledTrends = trends.map((trend) => {
+          if (trend.status === "fulfilled") {
+            return trend.value;
+          }
+        }).filter((trend): trend is TrendsResponse[] => trend !== undefined);
+        setTrends(fullFilledTrends);
         setTrendsStatus("success");
         suggestTitles(
           productName,
           productNameKeywordsUnique || [],
           imageKeywords || [],
-          trends
+          fullFilledTrends || []
         );
       }
       setStatus("success");
