@@ -18,7 +18,7 @@ import { useState } from "react";
 
 export const useProductTitle = () => {
   const [suggestedTitles, setSuggestedTitles] = useState<string[]>([]);
-  const [productNameKeywords, setProductNameKeywords] = useState<string[]>();
+  const [productNameKeywords, setProductNameKeywords] = useState<string[]>([]);
   const [searches, setSearches] = useState<SearchResponse>();
   const [trends, setTrends] = useState<TrendsResponse[][]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -55,7 +55,6 @@ export const useProductTitle = () => {
     imageUrl: string,
     siteId: string
   ) => {
-    setStatus("loading");
     setProductNameKeywordsStatus("loading");
     setTrendsStatus("loading");
     try {
@@ -103,11 +102,13 @@ export const useProductTitle = () => {
             })
           )
         );
-        const fullFilledTrends = trends.map((trend) => {
-          if (trend.status === "fulfilled") {
-            return trend.value;
-          }
-        }).filter((trend): trend is TrendsResponse[] => trend !== undefined);
+        const fullFilledTrends = trends
+          .map((trend) => {
+            if (trend.status === "fulfilled") {
+              return trend.value;
+            }
+          })
+          .filter((trend): trend is TrendsResponse[] => trend !== undefined);
         setTrends(fullFilledTrends);
         setTrendsStatus("success");
         suggestTitles(
@@ -117,7 +118,6 @@ export const useProductTitle = () => {
           fullFilledTrends || []
         );
       }
-      setStatus("success");
     } catch (error) {
       console.log(error);
       setStatus("error");
@@ -133,6 +133,7 @@ export const useProductTitle = () => {
     imageKeywords: string[],
     trends: TrendsResponse[][]
   ) => {
+    setStatus("loading");
     try {
       const values = productNameKeywords?.join(", ");
       const valuesImage = imageKeywords?.join(", ");
@@ -149,13 +150,13 @@ export const useProductTitle = () => {
             {
               role: "system",
               content:
-                "Eres un experto generador de listas de títulos en ESPAÑOL para productos destinados a plataformas de e-commerce como eBay, Amazon y MercadoLibre. Sigue las siguientes pautas: 1. Usa la mayor cantidad posible de palabras clave proporcionadas por el usuario. 2. Los títulos deben ser concisos, atractivos y optimizados para mejorar la visibilidad en motores de búsqueda (SEO). 3. No incluyas signos de puntuación, conectores, conjunciones, preposiciones, tildes, guiones ni caracteres especiales. 4. Los títulos deben estar formados por 8 a 15 palabras clave relevantes 5. Debes entregarme la lista de títulos directamente, sin incluir palabras adicionales. 6. Cada título debe estar separado por coma de la siguiente forma: 'titulo sugerido 1, titulo sugerido 2, ...'.",
+                "Eres un experto generador de listas de títulos en ESPAÑOL para productos destinados a plataformas de e-commerce como eBay, Amazon y MercadoLibre. Sigue las siguientes pautas: 1. Usa la mayor cantidad posible de palabras clave proporcionadas por el usuario. 2. Los títulos deben ser concisos, atractivos y optimizados para mejorar la visibilidad en motores de búsqueda (SEO). 3. No incluyas signos de puntuación, conectores, conjunciones, preposiciones, tildes, guiones ni caracteres especiales. 4. Debes entregarme la lista de títulos directamente, sin incluir palabras adicionales. 5. Cada título debe estar separado por coma de la siguiente forma: 'titulo sugerido 1, titulo sugerido 2, ...'. 6. Los títulos no deben contener palabras repetidas, por ejemplo sería un error un titulo de la siguiente forma 'ejercitador suelo pelvico ejercitador mandibular' ya que contiene 2 veces la palabra ejercitador, el titulo correcto sería 'ejercitador suelo pelvico mandibular'.",
             },
             {
               role: "user",
-              content: `4 títulos, para crear los títulos, solo ve adicionando todas las palabras claves que te doy, generando varias combinaciones coherentes y concisas y comenzando siempre por el nombre del producto, palabras claves:[${
+              content: `4 títulos, para formando los títulos, solo ve adicionando todas las palabras claves que te doy, generando varias combinaciones coherentes y concisas y comenzando siempre por el nombre del producto: **${productName}**, palabras claves:[${
                 values ? ` ${values}, ` : ""
-              } ${valuesImage} ${valuesTrends}]. El último título debe ser una combinación de todas las palabras claves. La anterior lista de palabras claves pueden contener palabras claves que no representan en absoluto al producto **${productName}**, por favor, identifica cuales si, y utilízalas para los títulos generados. Procura que el titulo generado no tenga palabras repetidas, como por ejemplo si tenemos las palabras claves [peluche gato], [peluche gato lucifer], [peluche gato original] No generes un titulo asi: [peluche gato peluche gato lucifer peluche gato original] si no asi: [peluche gato lucifer original]. Utiliza la mayor cantidad de palabras claves para cada título.`,
+              } ${valuesImage} ${valuesTrends}]. La anterior lista de palabras claves pueden contener palabras claves que no representan en absoluto al producto **${productName}**, por favor, identifica cuales si, y utilízalas para los títulos generados. El último título debe ser una combinación de todas las palabras claves. Procura que el titulo generado no tenga palabras repetidas incluyendo las palabras del nombre del producto **${productName}**, como por ejemplo si tenemos las palabras claves [peluche gato], [peluche gato lucifer], [peluche gato original] No generes un titulo asi: [peluche gato peluche gato lucifer peluche gato original] si no asi: [peluche gato lucifer original] omitiendo palabras ya iguales. Utiliza la mayor cantidad de palabras claves o todas para cada título.`,
             },
           ],
         };
@@ -170,6 +171,7 @@ export const useProductTitle = () => {
       console.log("títulos generados: ", message);
       const titles: string[] = message.split(", ");
       setSuggestedTitles([...new Set(titles)]);
+      setStatus("success");
     } catch (error) {
       console.log(error);
       throw error;
@@ -190,5 +192,6 @@ export const useProductTitle = () => {
     status,
     imageStatus,
     generateKeywordsSuggestedTitlesAndTrends,
+    suggestTitles,
   };
 };

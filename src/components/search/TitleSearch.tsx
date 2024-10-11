@@ -15,6 +15,7 @@ import { useProductTitle } from "@/hooks/useProductTitle";
 import { TermFormData } from "@/types/formsData";
 import { UserInfo } from "@/types/mercadolibreResponses";
 import { isValidURL } from "@/utils";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { ResultCard } from "../card/ResultCard";
 
@@ -23,6 +24,8 @@ type TitleSearchProps = {
 };
 
 export default function TitleSearch({ userData }: TitleSearchProps) {
+  const [productNameStorage, setProductNameStorage] = useState("");
+
   const {
     productNameKeywords,
     imageKeywords,
@@ -37,6 +40,7 @@ export default function TitleSearch({ userData }: TitleSearchProps) {
     status,
     imageStatus,
     generateKeywordsSuggestedTitlesAndTrends,
+    suggestTitles,
   } = useProductTitle();
 
   const form = useForm<TermFormData>({
@@ -46,6 +50,7 @@ export default function TitleSearch({ userData }: TitleSearchProps) {
 
   const onSubmit = (formData: TermFormData) => {
     const { productName, imageUrl } = formData;
+    setProductNameStorage(productName);
     generateKeywordsSuggestedTitlesAndTrends(
       productName,
       imageUrl,
@@ -126,6 +131,7 @@ export default function TitleSearch({ userData }: TitleSearchProps) {
         status={imageStatus}
       >
         {imageKeywords &&
+          imageKeywords.length > 0 &&
           imageKeywords.map((imageKeyword, index) => (
             <p key={`${index}-${imageKeyword}`}>{imageKeyword}</p>
           ))}
@@ -182,17 +188,31 @@ export default function TitleSearch({ userData }: TitleSearchProps) {
         description="Estas son las sugerencias generadas por IA para los títulos de los productos en ML."
         status={status}
       >
-        {suggestedTitles &&
-          suggestedTitles.length !== 0 &&
-          suggestedTitles.map((title, index) => {
-            if (title)
-              return (
-                <div key={index} className="p-3">
-                  <p>{title.trim()} </p>
-                  <p className="text-xs">({title.length} caracteres)</p>
-                </div>
-              );
-          })}
+        {suggestedTitles && suggestedTitles.length !== 0 && (
+          <>
+            <Button
+              onClick={() =>
+                suggestTitles(
+                  productNameStorage,
+                  productNameKeywords || [],
+                  imageKeywords || [],
+                  trends || []
+                )
+              }
+            >
+              Generar de nuevo
+            </Button>
+            {suggestedTitles.map((title, index) => {
+              if (title)
+                return (
+                  <div key={index} className="p-3">
+                    <p>{title.trim()} </p>
+                    <p className="text-xs">({title.length} caracteres)</p>
+                  </div>
+                );
+            })}
+          </>
+        )}
       </ResultCard>
     </div>
   );

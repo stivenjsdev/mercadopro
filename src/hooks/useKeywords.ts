@@ -7,7 +7,7 @@ import { useState } from "react";
 
 export const useKeywords = () => {
   const [status, setStatus] = useState<Status>("success");
-  const [keywords, setKeywords] = useState<string[] | null>(null);
+  const [keywords, setKeywords] = useState<string[]>([]);
   const suggestionsMutation = useMutation({
     mutationFn: getSuggestions,
   });
