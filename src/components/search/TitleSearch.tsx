@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input";
 import { useProductTitle } from "@/hooks/useProductTitle";
 import { TermFormData } from "@/types/formsData";
 import { UserInfo } from "@/types/mercadolibreResponses";
-import { isValidURL } from "@/utils";
+import { capitalizeWords, isValidURL } from "@/utils";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { ResultCard } from "../card/ResultCard";
@@ -191,6 +191,7 @@ export default function TitleSearch({ userData }: TitleSearchProps) {
         {suggestedTitles && suggestedTitles.length !== 0 && (
           <>
             <Button
+              className="w-full"
               onClick={() =>
                 suggestTitles(
                   productNameStorage,
@@ -200,13 +201,13 @@ export default function TitleSearch({ userData }: TitleSearchProps) {
                 )
               }
             >
-              Generar de nuevo
+              Generar de Nuevo
             </Button>
             {suggestedTitles.map((title, index) => {
               if (title)
                 return (
                   <div key={index} className="p-3">
-                    <p>{title.trim()} </p>
+                    <p>{capitalizeWords(title.trim())} </p>
                     <p className="text-xs">({title.length} caracteres)</p>
                   </div>
                 );
