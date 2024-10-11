@@ -15,6 +15,7 @@ export default function Home() {
               width={400}
               height={100}
               className="mx-auto"
+              priority
               // style={{ clipPath: 'inset(50px 0 50px 0)' }}
             />
           </div>
