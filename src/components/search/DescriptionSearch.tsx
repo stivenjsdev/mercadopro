@@ -134,6 +134,7 @@ export default function DescriptionSearch({
         status={imageStatus}
       >
         {keywords &&
+          keywords.length !== 0 &&
           keywords.map((imageKeyword, index) => (
             <p key={`${index}-${imageKeyword}`}>{imageKeyword}</p>
           ))}
@@ -145,7 +146,10 @@ export default function DescriptionSearch({
         status={status}
       >
         {description && description.length !== 0 && (
-          <Markdown remarkPlugins={[remarkGfm]} className="space-y-4 descriptionText">
+          <Markdown
+            remarkPlugins={[remarkGfm]}
+            className="space-y-4 descriptionText"
+          >
             {description}
           </Markdown>
         )}
