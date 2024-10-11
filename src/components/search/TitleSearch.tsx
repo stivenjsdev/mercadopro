@@ -11,7 +11,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
 import { useProductTitle } from "@/hooks/useProductTitle";
 import { TermFormData } from "@/types/formsData";
 import { UserInfo } from "@/types/mercadolibreResponses";
@@ -139,16 +138,15 @@ export default function TitleSearch({ userData }: TitleSearchProps) {
       >
         {trends &&
           trends.length !== 0 &&
-          trends.map((categoryTrends, i) =>
-            categoryTrends.map((trend, j) => (
-              <div key={`${j}${i}-${trend.keyword}`} className="p-3">
-                <p>
+          trends.map((categoryTrends, i) => (
+            <div key={i + "trendList"} className="p-3">
+              {categoryTrends.map((trend, j) => (
+                <p key={`${j}${i}-${trend.keyword}`}>
                   {j + 1}. {trend.keyword}
                 </p>
-                {j === categoryTrends.length - 1 && i !== trends.length - 1 && <Separator />}
-              </div>
-            ))
-          )}
+              ))}
+            </div>
+          ))}
       </ResultCard>
 
       <ResultCard
