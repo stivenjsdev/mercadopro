@@ -85,11 +85,15 @@ export const useProductTitle = () => {
       const categoryIds = searches?.results.map((item) => item.category_id);
       const uniqueCategoryIds = [...new Set(categoryIds)];
       console.log("categorías encontradas: ", uniqueCategoryIds);
-      const categories = await Promise.all(
+      const categories = await Promise.allSettled(
         uniqueCategoryIds.map((categoryId) => mutateCategories({ categoryId }))
       );
       console.log("categories data: ", categories);
-      setCategories(categories);
+      categories.forEach((category) => {
+        if (category.status === "fulfilled") {
+          setCategories((prev) => [...prev, category.value]);
+        }
+      });
       setCategoriesStatus("success");
       const storedTokenData = localStorage.getItem("MERCADOLIBRE_TOKEN_DATA");
       if (storedTokenData) {
