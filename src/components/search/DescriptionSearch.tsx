@@ -49,7 +49,7 @@ export default function DescriptionSearch({
     setUrl(formData.url);
     setImageError(false);
     generateKeywordsAndSuggestedDescription(productName, url, userData.site_id);
-    form.reset();
+    // form.reset();
   };
 
   return (

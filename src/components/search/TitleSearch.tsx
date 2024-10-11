@@ -51,7 +51,7 @@ export default function TitleSearch({ userData }: TitleSearchProps) {
       imageUrl,
       userData.site_id
     );
-    form.reset();
+    // form.reset();
   };
 
   return (
