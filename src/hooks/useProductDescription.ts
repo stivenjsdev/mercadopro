@@ -43,12 +43,12 @@ export default function useProductDescription() {
                   [Enumere los accesorios, complementos, artículos adicionales o productos relacionados que se incluyen con la compra]
                   ## **Políticas de devolución**
                   [Describa las políticas de devolución, garantía, cambios y reembolso aplicables al producto]
-                  [Texto predefinido: Devoluciones fáciles en 30 días, reembolso completo o cambio (excepto para productos de ropa íntima)]
+                  [Texto predefinido: Devoluciones fáciles en 30 días, reembolso completo o cambio (excepto para productos de uso íntimo)]
                   ## **Métodos de pago**
                   [Enumere los métodos de pago aceptados]
                   [Texto predefinido: Aceptamos tarjetas de crédito, débito, Mercadopago, Efecty y PSE]
                   ## **Preguntas frecuentes**
-                  [Texto predefinido: P: ¿Se paga contra reembolso? R: No, sólo aceptamos pagos por adelantado.]
+                  [Texto predefinido: P: ¿Se paga contra entrega? R: No, sólo aceptamos pagos por adelantado.]
                   [Texto predefinido: P: ¿Cuánto tarda en llegar mi pedido? R: En el detalle de tu compra, puedes ver el tiempo estimado de envío a tu localidad.]
                   [Además de lsa anteriores, Genere y Enumere más de 2 preguntas frecuentes y sus respuestas]
                   ## **Nombre de empresa**

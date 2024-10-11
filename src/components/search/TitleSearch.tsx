@@ -115,7 +115,7 @@ export default function TitleSearch({ userData }: TitleSearchProps) {
 
       <ResultCard
         title="Palabras claves por nombre de producto"
-        description="Estas son las sugerencias de búsqueda generadas por ML."
+        description="Estas son las sugerencias de búsqueda generadas por ML a partir del nombre de tu producto."
         status={productNameKeywordsStatus}
       >
         {productNameKeywords &&
@@ -127,45 +127,13 @@ export default function TitleSearch({ userData }: TitleSearchProps) {
 
       <ResultCard
         title="Palabras claves por imagen de producto"
-        description="Estas son las palabras claves generadas por inteligencia artificial a partir de la imagen otorgada."
+        description="Estas son las palabras claves generadas por IA a partir de la imagen otorgada de tu producto."
         status={imageStatus}
       >
         {imageKeywords &&
           imageKeywords.length > 0 &&
           imageKeywords.map((imageKeyword, index) => (
             <p key={`${index}-${imageKeyword}`}>{imageKeyword}</p>
-          ))}
-      </ResultCard>
-
-      <ResultCard
-        title="Tendencias"
-        description="Estas son las búsquedas más populares, ordenadas de la mayor a la menor solicitada."
-        status={trendsStatus}
-      >
-        {trends &&
-          trends.length !== 0 &&
-          trends.map((categoryTrends, i) => (
-            <div key={i + "trendList"} className="p-3">
-              {categoryTrends.map((trend, j) => (
-                <p key={`${j}${i}-${trend.keyword}`}>
-                  {j + 1}. {trend.keyword}
-                </p>
-              ))}
-            </div>
-          ))}
-      </ResultCard>
-
-      <ResultCard
-        title="Búsquedas de Mercadolibre"
-        description="Estos son los títulos de los productos encontrados en ML."
-        status={searchesStatus}
-      >
-        {searches &&
-          searches.results.map((result) => (
-            <div key={result.id} className="p-3">
-              <p>{result.title} </p>
-              <p className="text-xs">({result.title.length} caracteres)</p>
-            </div>
           ))}
       </ResultCard>
 
@@ -184,8 +152,43 @@ export default function TitleSearch({ userData }: TitleSearchProps) {
       </ResultCard>
 
       <ResultCard
+        title="Tendencias"
+        description="Estas son las búsquedas más populares, ordenadas de la mayor a la menor para las categorías encontradas relacionadas a tu producto."
+        status={trendsStatus}
+      >
+        {trends &&
+          trends.length !== 0 &&
+          trends.map((categoryTrends, i) => (
+            <div key={i + "trendList"} className="p-3">
+              {categoryTrends.map((trend, j) => (
+                <p key={`${j}${i}-${trend.keyword}`}>
+                  <span className="font-bold w-[25.5px] inline-block">
+                    {j + 1}.
+                  </span>{" "}
+                  {trend.keyword}
+                </p>
+              ))}
+            </div>
+          ))}
+      </ResultCard>
+
+      <ResultCard
+        title="Búsquedas de Mercadolibre"
+        description="Estos son los títulos de los productos encontrados en ML relacionados a tu producto."
+        status={searchesStatus}
+      >
+        {searches &&
+          searches.results.map((result) => (
+            <div key={result.id} className="p-3">
+              <p>{result.title} </p>
+              <p className="text-xs">({result.title.length} caracteres)</p>
+            </div>
+          ))}
+      </ResultCard>
+
+      <ResultCard
         title="Titulo de Producto Sugerido"
-        description="Estas son las sugerencias generadas por IA para los títulos de los productos en ML."
+        description="Estas son las sugerencias de títulos generadas por IA para tu producto, utilizando todas las palabras claves anteriores."
         status={status}
       >
         {suggestedTitles && suggestedTitles.length !== 0 && (
