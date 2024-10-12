@@ -82,7 +82,3 @@ body {
 }
 
 /* Custom Styles */
-
-.descriptionText h2::before {
-  content: "----------";
-}

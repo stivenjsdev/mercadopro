@@ -146,11 +146,11 @@ export default function DescriptionSearch({
         status={status}
       >
         {description && description.length !== 0 && (
-          <Markdown
-            remarkPlugins={[remarkGfm]}
-            className="space-y-4 descriptionText"
-          >
-            {description}
+          <Markdown remarkPlugins={[remarkGfm]} className="space-y-4">
+            {description.replace(
+              /\n\n/g,
+              "\n\n//////////////////////////////\n"
+            )}
           </Markdown>
         )}
       </ResultCard>
