@@ -1,6 +1,6 @@
 "use client";
 
-import { ResultCard } from "@/components/card/ResultCard";
+import ResultCard from "@/components/card/ResultCard";
 import { Button } from "@/components/ui/button";
 import {
   Form,

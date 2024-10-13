@@ -1,5 +1,6 @@
 "use client";
 
+import ResultCard from "@/components/card/ResultCard";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -17,7 +18,6 @@ import { UserInfo } from "@/types/mercadolibreResponses";
 import { capitalizeWords, isValidURL } from "@/utils";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { ResultCard } from "../card/ResultCard";
 
 type TitleSearchProps = {
   userData: UserInfo;

@@ -16,37 +16,22 @@ interface ResultsCardProps {
   status: Status;
 }
 
-export function ResultCard({
+export default function ResultCard({
   title,
   description,
   children,
   status,
 }: ResultsCardProps) {
   if (status === "loading") {
-    return (
-      <div className="space-y-4">
-        <Skeleton className="h-[120px] w-full rounded-xl" />
-        <div className="space-y-2">
-          <Skeleton className="h-4 w-full" />
-          <Skeleton className="h-4 w-3/4" />
-        </div>
-      </div>
-    );
+    return <ResultCardSkeleton />;
   }
 
   if (status === "error") {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Error: {title}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-red-500">
-            Se produjo un error al procesar la información. Por favor inténtalo nuevamente.
-          </p>
-        </CardContent>
-      </Card>
-    );
+    return <ResultCardError title={title} />;
+  }
+
+  if (!children) {
+    return null;
   }
 
   return (
@@ -63,3 +48,29 @@ export function ResultCard({
     </>
   );
 }
+
+const ResultCardSkeleton = () => (
+  <Card>
+    <CardHeader>
+      <Skeleton className="h-4 w-3/4 rounded-xl" />
+      <Skeleton className="h-3 w-full rounded-xl" />
+    </CardHeader>
+    <CardContent>
+      <Skeleton className="h-10 w-full" />
+    </CardContent>
+  </Card>
+);
+
+const ResultCardError = ({ title }: { title: string }) => (
+  <Card>
+    <CardHeader>
+      <CardTitle>Error: {title}</CardTitle>
+    </CardHeader>
+    <CardContent>
+      <p className="text-red-500">
+        Se produjo un error al procesar la información. Por favor inténtalo
+        nuevamente.
+      </p>
+    </CardContent>
+  </Card>
+);
