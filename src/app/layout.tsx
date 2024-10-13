@@ -20,7 +20,32 @@ const geistMono = localFont({
 
 // export const metadata: Metadata = {
 //   title: "Mercadopro",
-//   description: "Mercadopro created by sergio",
+//   description:
+//     "Tu Titulo y Descripción de Producto Generado con IA creado por Sergio Jiménez",
+//   keywords: [
+//     "mercadolibre",
+//     "mercadopro",
+//     "ia",
+//     "generador",
+//     "titulo",
+//     "descripción",
+//     "producto",
+//     "sergio jimenez",
+//   ],
+//   openGraph: {
+//     title: "MercadoPro",
+//     description:
+//       "Tu Titulo y Descripción de Producto Generado con IA creado por Sergio Jiménez.",
+//     url: "https://mercadopro.netlify.app/",
+//     images: [
+//       {
+//         url: "/images/logomercadopro.png",
+//         width: 400,
+//         height: 157,
+//         alt: "Logo MercadoPro",
+//       },
+//     ],
+//   },
 // };
 
 export default function RootLayout({

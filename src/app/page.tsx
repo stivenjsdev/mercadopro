@@ -8,21 +8,20 @@ export default function Home() {
     <>
       <header className="w-full">
         <h1 className="text-2xl text-center py-2 font-bold">
-          <div className="">
+          <div className="w-auto inline-block mx-auto">
             <Image
               src="/images/logomercadopro.png"
               alt="Logo"
               width={400}
-              height={100}
-              className="mx-auto"
+              height={157}
               priority
               // style={{ clipPath: 'inset(50px 0 50px 0)' }}
             />
           </div>
           {/* Mercado<span className="text-[#FFCF00]">Pro</span> */}
-          <span className="text-base block font-light">
+          <h2 className="text-base block font-light">
             Tu Titulo y Descripción de Producto Generado con IA
-          </span>
+          </h2>
         </h1>
       </header>
       <main className="p-4">
