@@ -8,4 +8,8 @@ export type ImageFormData = {
   url: string;
 };
 
+export type LoginFormData = {
+  country: string;
+};
+
 export type Status = "loading" | "success" | "error";

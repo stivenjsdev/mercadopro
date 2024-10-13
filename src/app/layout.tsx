@@ -1,4 +1,5 @@
 import Header from "@/components/header/Header";
+import { Toaster } from "@/components/ui/toaster";
 import ReactQueryProvider from "@/utils/providers/ReactQueryProvider";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
@@ -61,6 +62,7 @@ export default function RootLayout({
             <div className="w-full max-w-lg mx-auto space-y-4">{children}</div>
           </main>
         </ReactQueryProvider>
+        <Toaster />
       </body>
     </html>
   );
