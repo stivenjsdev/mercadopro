@@ -9,7 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Status } from "@/types/formsData";
 import React from "react";
 
-interface ImageResultsCardProps {
+interface ResultsCardProps {
   title: string;
   description?: string;
   children?: React.ReactNode;
@@ -21,7 +21,7 @@ export function ResultCard({
   description,
   children,
   status,
-}: ImageResultsCardProps) {
+}: ResultsCardProps) {
   if (status === "loading") {
     return (
       <div className="space-y-4">
