@@ -1,6 +1,5 @@
 "use client";
 
-import ResultCard from "@/components/card/ResultCard";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -15,9 +14,11 @@ import { Input } from "@/components/ui/input";
 import { useProductTitle } from "@/hooks/useProductTitle";
 import { TermFormData } from "@/types/formsData";
 import { UserInfo } from "@/types/mercadolibreResponses";
-import { capitalizeWords, isValidURL } from "@/utils";
+import { isValidURL } from "@/utils";
+import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import TitleAccordion from "../TitleAccordion";
 
 type TitleSearchProps = {
   userData: UserInfo;
@@ -25,6 +26,8 @@ type TitleSearchProps = {
 
 export default function TitleSearch({ userData }: TitleSearchProps) {
   const [productNameStorage, setProductNameStorage] = useState("");
+  const [isButtonLoading, setIsButtonLoading] = useState(false);
+  const [showAccordion, setShowAccordion] = useState(false);
 
   const {
     productNameKeywords,
@@ -48,14 +51,17 @@ export default function TitleSearch({ userData }: TitleSearchProps) {
     mode: "onBlur", // This will trigger validation on blur
   });
 
-  const onSubmit = (formData: TermFormData) => {
+  const onSubmit = async (formData: TermFormData) => {
     const { productName, imageUrl } = formData;
     setProductNameStorage(productName);
-    generateKeywordsSuggestedTitlesAndTrends(
+    setIsButtonLoading(true);
+    await generateKeywordsSuggestedTitlesAndTrends(
       productName,
       imageUrl,
       userData.site_id
     );
+    setIsButtonLoading(false);
+    setShowAccordion(true);
     // form.reset();
   };
 
@@ -109,115 +115,41 @@ export default function TitleSearch({ userData }: TitleSearchProps) {
               </FormItem>
             )}
           />
-          <Button type="submit">Consultar</Button>
+          <Button type="submit">
+            {isButtonLoading ? (
+              <>
+                <Loader2
+                  size={24}
+                  className={`animate-spin text-white mr-2`}
+                  aria-label="Cargando"
+                />
+                Consultando...
+              </>
+            ) : (
+              "Consultar"
+            )}
+          </Button>
         </form>
       </Form>
 
-      <ResultCard
-        title="Palabras claves por nombre de producto"
-        description="Estas son las sugerencias de búsqueda generadas por ML a partir del nombre de tu producto."
-        status={productNameKeywordsStatus}
-      >
-        {productNameKeywords &&
-          productNameKeywords.length > 0 &&
-          productNameKeywords.map((productNameKeyword, index) => (
-            <p key={index + productNameKeyword}>{productNameKeyword}</p>
-          ))}
-      </ResultCard>
-
-      <ResultCard
-        title="Palabras claves por imagen de producto"
-        description="Estas son las palabras claves generadas por IA a partir de la imagen otorgada de tu producto."
-        status={imageStatus}
-      >
-        {imageKeywords &&
-          imageKeywords.length > 0 &&
-          imageKeywords.map((imageKeyword, index) => (
-            <p key={`${index}-${imageKeyword}`}>{imageKeyword}</p>
-          ))}
-      </ResultCard>
-
-      <ResultCard
-        title="Categorías"
-        description="Estas son las categorías encontradas en las búsquedas."
-        status={categoriesStatus}
-      >
-        {categories &&
-          categories.length !== 0 &&
-          categories.map((category) => (
-            <p key={category.id} className="p-3">
-              {category.path_from_root.map((path) => path.name).join(" > ")}
-            </p>
-          ))}
-      </ResultCard>
-
-      <ResultCard
-        title="Tendencias"
-        description="Estas son las búsquedas más populares, ordenadas de la mayor a la menor para las categorías encontradas relacionadas a tu producto."
-        status={trendsStatus}
-      >
-        {trends &&
-          trends.length !== 0 &&
-          trends.map((categoryTrends, i) => (
-            <div key={i + "trendList"} className="p-3">
-              {categoryTrends.map((trend, j) => (
-                <p key={`${j}${i}-${trend.keyword}`}>
-                  <span className="font-bold w-[25.5px] inline-block">
-                    {j + 1}.
-                  </span>{" "}
-                  {trend.keyword}
-                </p>
-              ))}
-            </div>
-          ))}
-      </ResultCard>
-
-      <ResultCard
-        title="Búsquedas de Mercadolibre"
-        description="Estos son los títulos de los productos encontrados en ML relacionados a tu producto."
-        status={searchesStatus}
-      >
-        {searches &&
-          searches.results.map((result) => (
-            <div key={result.id} className="p-3">
-              <p>{result.title} </p>
-              <p className="text-xs">({result.title.length} caracteres)</p>
-            </div>
-          ))}
-      </ResultCard>
-
-      <ResultCard
-        title="Titulo de Producto Sugerido"
-        description="Estas son las sugerencias de títulos generadas por IA para tu producto, utilizando todas las palabras claves anteriores."
-        status={status}
-      >
-        {suggestedTitles && suggestedTitles.length !== 0 && (
-          <>
-            <Button
-              className="w-full"
-              onClick={() =>
-                suggestTitles(
-                  productNameStorage,
-                  productNameKeywords || [],
-                  imageKeywords || [],
-                  trends || []
-                )
-              }
-            >
-              Generar de Nuevo
-            </Button>
-            {suggestedTitles.map((title, index) => {
-              if (title)
-                return (
-                  <div key={index} className="p-3">
-                    <p>{capitalizeWords(title.trim())} </p>
-                    <p className="text-xs">({title.length} caracteres)</p>
-                  </div>
-                );
-            })}
-          </>
-        )}
-      </ResultCard>
+      {showAccordion && (
+        <TitleAccordion
+          productNameStorage={productNameStorage}
+          productNameKeywords={productNameKeywords}
+          imageKeywords={imageKeywords}
+          searches={searches}
+          trends={trends}
+          categories={categories}
+          suggestedTitles={suggestedTitles}
+          productNameKeywordsStatus={productNameKeywordsStatus}
+          searchesStatus={searchesStatus}
+          trendsStatus={trendsStatus}
+          categoriesStatus={categoriesStatus}
+          status={status}
+          imageStatus={imageStatus}
+          suggestTitles={suggestTitles}
+        />
+      )}
     </div>
   );
 }

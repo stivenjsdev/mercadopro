@@ -16,6 +16,7 @@ import useProductDescription from "@/hooks/useProductDescription";
 import { ImageFormData } from "@/types/formsData";
 import { UserInfo } from "@/types/mercadolibreResponses";
 import { isValidURL } from "@/utils";
+import { Loader2 } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -29,6 +30,7 @@ type DescriptionSearchProps = {
 export default function DescriptionSearch({
   userData,
 }: DescriptionSearchProps) {
+  const [isButtonLoading, setIsButtonLoading] = useState(false);
   const [url, setUrl] = useState("");
   const [imageError, setImageError] = useState(false);
   const {
@@ -44,11 +46,17 @@ export default function DescriptionSearch({
     mode: "onBlur", // This will trigger validation on blur
   });
 
-  const onSubmit = (formData: ImageFormData) => {
+  const onSubmit = async (formData: ImageFormData) => {
+    setIsButtonLoading(true);
     const { productName, url } = formData;
     setUrl(formData.url);
     setImageError(false);
-    generateKeywordsAndSuggestedDescription(productName, url, userData.site_id);
+    await generateKeywordsAndSuggestedDescription(
+      productName,
+      url,
+      userData.site_id
+    );
+    setIsButtonLoading(false);
     // form.reset();
   };
 
@@ -102,7 +110,20 @@ export default function DescriptionSearch({
               </FormItem>
             )}
           />
-          <Button type="submit">Generar</Button>
+          <Button type="submit">
+            {isButtonLoading ? (
+              <>
+                <Loader2
+                  size={24}
+                  className={`animate-spin text-white mr-2`}
+                  aria-label="Cargando"
+                />
+                Consultando...
+              </>
+            ) : (
+              "Generar"
+            )}
+          </Button>
         </form>
       </Form>
 

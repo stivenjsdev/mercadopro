@@ -19,7 +19,7 @@ import { useState } from "react";
 export const useProductTitle = () => {
   const [suggestedTitles, setSuggestedTitles] = useState<string[]>([]);
   const [productNameKeywords, setProductNameKeywords] = useState<string[]>([]);
-  const [searches, setSearches] = useState<SearchResponse>();
+  const [searches, setSearches] = useState<SearchResponse | null>(null);
   const [trends, setTrends] = useState<TrendsResponse[][]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [productNameKeywordsStatus, setProductNameKeywordsStatus] =
