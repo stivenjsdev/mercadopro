@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { fetchUserInfo, refreshToken } from "@/services/auth/mercadolibreAuth";
 import { UserInfo } from "@/types/mercadolibreResponses";
 import { TokenData } from "@/types/tokenData";
+import { blacklist } from "@/utils/blacklist";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -19,7 +20,7 @@ const AuthComponent = () => {
 
   useEffect(() => {
     const handleAuthentication = async () => {
-      // Verificar si hay un token en la URL
+      // Verificar si hay un token en la URL y lo almacena en localStorage
       const tokenFromUrl = searchParams.get("token");
       if (tokenFromUrl) {
         try {
@@ -48,8 +49,22 @@ const AuthComponent = () => {
       if (storedTokenData) {
         const tokenData = JSON.parse(storedTokenData);
         if (Date.now() < tokenData.expires_at) {
+          // Verificar si el usuario está en la lista negra
+          if (blacklist.includes(tokenData.user_id)) {
+            toast({
+              title: "Error de autenticación",
+              description:
+                "No tienes permisos para acceder a esta aplicación.",
+              variant: "destructive",
+              duration: 10000,
+            });
+            // setIsLoading(false);
+            return;
+          }
+          // Obtener información del usuario
           await getUserInfo(tokenData.access_token);
         } else {
+          // Refrescar token
           await handleTokenRefresh(tokenData.refresh_token);
         }
       } else {
