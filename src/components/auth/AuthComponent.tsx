@@ -46,29 +46,32 @@ const AuthComponent = () => {
 
       // Verificar si hay un token almacenado en localStorage
       const storedTokenData = localStorage.getItem("MERCADOLIBRE_TOKEN_DATA");
-      if (storedTokenData) {
-        const tokenData = JSON.parse(storedTokenData);
-        if (Date.now() < tokenData.expires_at) {
-          // Verificar si el usuario está en la lista negra
-          if (blacklist.includes(tokenData.user_id)) {
-            toast({
-              title: "Error de autenticación",
-              description:
-                "No tienes permisos para acceder a esta aplicación.",
-              variant: "destructive",
-              duration: 10000,
-            });
-            // setIsLoading(false);
-            return;
-          }
-          // Obtener información del usuario
-          await getUserInfo(tokenData.access_token);
-        } else {
-          // Refrescar token
-          await handleTokenRefresh(tokenData.refresh_token);
-        }
-      } else {
+      if (storedTokenData === null || storedTokenData === undefined) {
         setIsLoading(false);
+        return;
+      }
+
+      // Convertir el token almacenado en un objeto
+      const tokenData = JSON.parse(storedTokenData);
+      // Verificar si el usuario está en la lista negra
+      if (blacklist.includes(tokenData.user_id)) {
+        toast({
+          title: "Error de autenticación",
+          description: "No tienes permisos para acceder a esta aplicación.",
+          variant: "destructive",
+          duration: 10000,
+        });
+        // setIsLoading(false);
+        return;
+      }
+
+      // Verificar si el token está vigente
+      if (Date.now() < tokenData.expires_at) {
+        // Obtener información del usuario
+        await getUserInfo(tokenData.access_token);
+      } else {
+        // Refrescar token
+        await handleTokenRefresh(tokenData.refresh_token);
       }
     };
 
@@ -84,7 +87,6 @@ const AuthComponent = () => {
       //   title: 'Sesión iniciada',
       //   description: `Bienvenido ${data.first_name}.`,
       //   variant: 'default',
-
       // });
     } catch (error) {
       console.error("Error fetching user info:", error);
