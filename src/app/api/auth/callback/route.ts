@@ -8,6 +8,8 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "No code provided" }, { status: 400 });
   }
 
+  console.log("params, code", code);
+
   try {
     const tokenResponse = await fetch(
       "https://api.mercadolibre.com/oauth/token",
