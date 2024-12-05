@@ -2,6 +2,8 @@ type Params = {
   categoryId: string;
 };
 
+// Obtener información de una categoría por su ID
+// GET /api/user/categories/[categoryId]
 export async function GET(request: Request, { params }: { params: Params }) {
   const { categoryId } = params;
 

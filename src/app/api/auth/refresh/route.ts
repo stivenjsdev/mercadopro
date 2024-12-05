@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 
+// Después de que el token de acceso expira, el cliente puede solicitar un nuevo token de acceso utilizando el token de actualización
+// POST /api/auth/refresh
 export async function POST(request: Request) {
+  // Obtener el token de actualización del cuerpo de la solicitud
   const { refresh_token } = await request.json();
 
   if (!refresh_token) {
@@ -11,6 +14,7 @@ export async function POST(request: Request) {
   }
 
   try {
+    // Intercambiar el token de actualización por un nuevo token de acceso
     const tokenResponse = await fetch(
       "https://api.mercadolibre.com/oauth/token",
       {

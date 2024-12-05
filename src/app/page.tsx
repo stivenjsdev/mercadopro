@@ -6,6 +6,7 @@ const AuthComponent = lazy(() => import("@/components/auth/AuthComponent"));
 export default function Home() {
   return (
     <Suspense fallback={<Skeleton className="h-[36px] w-full" />}>
+      {/* AuthComponent valida access token y retorna UserContent o LoginForm */}
       <AuthComponent />
     </Suspense>
   );

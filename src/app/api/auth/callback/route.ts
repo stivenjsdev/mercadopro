@@ -1,14 +1,19 @@
 import { NextResponse } from "next/server";
 
+// Después de que el usuario inicia sesión en MercadoLibre, MercadoLibre redirige al usuario a esta ruta con un código de autorización
+// GET /api/auth/callback?code=AUTHORIZATION_CODE
 export async function GET(request: Request) {
+  // Obtener el código de autorización de la URL
   const { searchParams } = new URL(request.url);
   const code = searchParams.get("code");
 
+  // Verificar si se proporcionó un código, de lo contrario, devolver un error 400 No Code provided
   if (!code) {
     return NextResponse.json({ error: "No code provided" }, { status: 400 });
   }
 
   try {
+    // Intercambiar el código de autorización por un token de acceso
     const tokenResponse = await fetch(
       "https://api.mercadolibre.com/oauth/token",
       {

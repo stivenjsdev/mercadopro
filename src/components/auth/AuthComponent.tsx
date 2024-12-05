@@ -81,7 +81,9 @@ const AuthComponent = () => {
 
   const getUserInfo = async (token: string) => {
     try {
+      // Obtener información del usuario con el token de acceso proporcionado por MercadoLibre
       const data = await fetchUserInfo(token);
+      // Almacenar la información del usuario en el estado userInfo
       setUserInfo(data);
       // toast({
       //   title: 'Sesión iniciada',
@@ -104,6 +106,7 @@ const AuthComponent = () => {
 
   const handleTokenRefresh = async (refreshTokenValue: string) => {
     try {
+      // Refrescar el token de acceso con el token de actualización proporcionado por MercadoLibre
       const newTokenData = await refreshToken(refreshTokenValue);
       localStorage.setItem(
         "MERCADOLIBRE_TOKEN_DATA",
@@ -112,6 +115,7 @@ const AuthComponent = () => {
           expires_at: Date.now() + newTokenData.expires_in * 1000,
         })
       );
+      // Obtener información del usuario con el nuevo token de acceso
       await getUserInfo(newTokenData.access_token);
     } catch (error) {
       console.error("Error refreshing token:", error);
@@ -130,6 +134,7 @@ const AuthComponent = () => {
     return <Skeleton className="h-[36px] w-full" />;
   }
 
+  // Si userInfo es nulo, mostrar el formulario de inicio de sesión
   return userInfo ? <UserContent userInfo={userInfo} /> : <LoginForm />;
 };
 

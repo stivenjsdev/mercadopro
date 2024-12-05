@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { OpenAI } from "openai";
 
+// consultas a la API de OpenAI
+// POST /api/openai
 export async function POST(request: NextRequest) {
   try {
     // create a OpenAI API client

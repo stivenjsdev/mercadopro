@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 
+// Obtener información del usuario en MercadoLibre
+// GET /api/user/me?token=ACCESS_TOKEN
 export async function GET(request: Request) {
+  // Obtener el token de acceso de la URL
   const { searchParams } = new URL(request.url);
   const token = searchParams.get("token");
 
@@ -9,6 +12,7 @@ export async function GET(request: Request) {
   }
 
   try {
+    // Hacer una solicitud a la API de MercadoLibre para obtener información del usuario
     const response = await fetch("https://api.mercadolibre.com/users/me", {
       headers: {
         Authorization: `Bearer ${token}`,
