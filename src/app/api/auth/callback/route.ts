@@ -29,6 +29,8 @@ export async function GET(request: Request) {
       }
     );
 
+    console.log("tokenResponse", tokenResponse.status, tokenResponse.statusText);
+
     if (!tokenResponse.ok) {
       throw new Error(
         `Failed to exchange code for token ${tokenResponse.status}`
