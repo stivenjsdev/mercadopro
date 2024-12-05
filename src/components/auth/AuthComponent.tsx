@@ -78,7 +78,7 @@ const AuthComponent = () => {
 
     handleAuthentication();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams, router]);
+  }, []);
 
   const getUserInfo = async (token: string) => {
     try {
