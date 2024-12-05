@@ -8,8 +8,6 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "No code provided" }, { status: 400 });
   }
 
-  console.log("params, code", code);
-
   try {
     const tokenResponse = await fetch(
       "https://api.mercadolibre.com/oauth/token",
@@ -28,11 +26,6 @@ export async function GET(request: Request) {
         }),
       }
     );
-
-    console.log("tokenResponse", tokenResponse.status, tokenResponse.statusText);
-    console.log("mercadolibreClientId", process.env.NEXT_PUBLIC_MERCADOLIBRE_CLIENT_ID);
-    console.log("mercadolibreClientSecret", process.env.MERCADOLIBRE_CLIENT_SECRET);
-    console.log("mercadolibreRedirectUri", process.env.NEXT_PUBLIC_MERCADOLIBRE_REDIRECT_URI);
 
     if (!tokenResponse.ok) {
       throw new Error(

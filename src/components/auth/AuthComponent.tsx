@@ -22,7 +22,6 @@ const AuthComponent = () => {
     const handleAuthentication = async () => {
       // Verificar si hay un token en la URL y lo almacena en localStorage
       const tokenFromUrl = searchParams.get("token");
-      console.log("tokenFromUrl", tokenFromUrl);
       if (tokenFromUrl) {
         try {
           const tokenData: TokenData = JSON.parse(atob(tokenFromUrl));
