@@ -8,14 +8,16 @@ import {
 export async function getSearches({
   term,
   siteId,
+  accessToken,
 }: {
   term: string;
   siteId: string;
+  accessToken: string;
 }): Promise<SearchResponse> {
   try {
     const encodedTerm = encodeURIComponent(term);
     const response = await fetch(
-      `/api/user/search?siteId=${siteId}&term=${encodedTerm}`
+      `/api/user/search?token=${accessToken}&siteId=${siteId}&term=${encodedTerm}`
     );
 
     if (!response.ok) {
@@ -74,7 +76,9 @@ export const getTrends = async ({
 
     if (!response.ok) {
       const errorData = await response.json();
-      throw new Error(errorData.error || "Something went wrong fetching trends");
+      throw new Error(
+        errorData.error || "Something went wrong fetching trends"
+      );
     }
 
     const data: TrendsResponse[] = await response.json();
@@ -95,7 +99,9 @@ export const getCategoryById = async ({
     const response = await fetch("/api/user/categories/" + categoryId);
     if (!response.ok) {
       const errorData = await response.json();
-      throw new Error(errorData.error || "Something went wrong fetching category");
+      throw new Error(
+        errorData.error || "Something went wrong fetching category"
+      );
     }
 
     const data: Category = await response.json();

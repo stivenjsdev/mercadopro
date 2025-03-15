@@ -73,26 +73,38 @@ export const useProductTitle = () => {
       const productNameKeywordsUnique = [...new Set(productNameKeywordsFlat)];
       setProductNameKeywords(productNameKeywordsUnique);
       setProductNameKeywordsStatus("success");
-      // get searches and keywords from image
-      const [searches, imageKeywords] = await Promise.all([
-        mutateSearches({ term: productName, siteId }),
-        generateKeywordsByImageUrl(imageUrl, productName, siteId),
-      ]);
-      setSearches(searches);
-      setSearchesStatus("success");
 
-      const categoryIds = searches?.results.map((item) => item.category_id);
-      const uniqueCategoryIds = [...new Set(categoryIds)];
-      console.log("categorías encontradas: ", uniqueCategoryIds);
-      const categories = await Promise.all(
-        uniqueCategoryIds.map((categoryId) => mutateCategories({ categoryId }))
-      );
-      console.log("categories data: ", categories);
-      setCategories(categories);
-      setCategoriesStatus("success");
+      // get access token from localStorage, for requests that need access token
       const storedTokenData = localStorage.getItem("MERCADOLIBRE_TOKEN_DATA");
       if (storedTokenData) {
         const tokenData = JSON.parse(storedTokenData);
+
+        // get searches and keywords from image
+        const [searches, imageKeywords] = await Promise.all([
+          mutateSearches({
+            term: productName,
+            siteId,
+            accessToken: tokenData.access_token,
+          }),
+          generateKeywordsByImageUrl(imageUrl, productName, siteId),
+        ]);
+        setSearches(searches);
+        setSearchesStatus("success");
+
+        // get all categories associated with previous searches
+        const categoryIds = searches?.results.map((item) => item.category_id);
+        const uniqueCategoryIds = [...new Set(categoryIds)];
+        console.log("categorías encontradas: ", uniqueCategoryIds);
+        const categories = await Promise.all(
+          uniqueCategoryIds.map((categoryId) =>
+            mutateCategories({ categoryId })
+          )
+        );
+        console.log("categories data: ", categories);
+        setCategories(categories);
+        setCategoriesStatus("success");
+
+        // get trends
         const trends = await Promise.allSettled(
           uniqueCategoryIds.map((categoryId) =>
             mutateTrends({

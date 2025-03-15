@@ -5,9 +5,13 @@ import { NextResponse } from "next/server";
 export async function GET(request: Request) {
   // Obtener el siteId y el término de búsqueda de la URL
   const { searchParams } = new URL(request.url);
+  const token = searchParams.get("token");
   const siteId = searchParams.get("siteId");
   const term = searchParams.get("term");
 
+  if (!token) {
+    return NextResponse.json({ error: "No token provided" }, { status: 400 });
+  }
   if (!siteId) {
     return NextResponse.json({ error: "No siteId provided" }, { status: 400 });
   }
@@ -15,7 +19,12 @@ export async function GET(request: Request) {
   try {
     // Hacer una solicitud a la API de MercadoLibre para obtener resultados de búsqueda
     const response = await fetch(
-      `https://api.mercadolibre.com/sites/${siteId}/search?q=${term}&limit=6`
+      `https://api.mercadolibre.com/sites/${siteId}/search?q=${term}&limit=6`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
     );
 
     console.log(response.status);
