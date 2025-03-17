@@ -1,5 +1,22 @@
 import { NextResponse } from "next/server";
 
+// const EXTENSION_ORIGIN = 'chrome-extension://abc123'; // producción
+const EXTENSION_ORIGIN = "*"; // pruebas
+
+export async function OPTIONS() {
+  return NextResponse.json(
+    {},
+    {
+      status: 200,
+      headers: {
+        "Access-Control-Allow-Origin": EXTENSION_ORIGIN, // Permite todos los orígenes
+        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization",
+      },
+    }
+  );
+}
+
 // Después de que el token de acceso expira, el cliente puede solicitar un nuevo token de acceso utilizando el token de actualización
 // POST /api/auth/refresh
 export async function POST(request: Request) {
@@ -37,7 +54,11 @@ export async function POST(request: Request) {
     }
 
     const tokenData = await tokenResponse.json();
-    return NextResponse.json(tokenData);
+    return NextResponse.json(tokenData, {
+      headers: {
+        "Access-Control-Allow-Origin": EXTENSION_ORIGIN, // Permite todos los orígenes
+      },
+    });
   } catch (error) {
     console.error("Error refreshing token:", error);
     return NextResponse.json(

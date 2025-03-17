@@ -1,5 +1,22 @@
 import { NextResponse } from "next/server";
 
+// const EXTENSION_ORIGIN = 'chrome-extension://abc123'; // producción
+const EXTENSION_ORIGIN = "*"; // pruebas
+
+export async function OPTIONS() {
+  return NextResponse.json(
+    {},
+    {
+      status: 200,
+      headers: {
+        "Access-Control-Allow-Origin": EXTENSION_ORIGIN, // Permite todos los orígenes
+        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization",
+      },
+    }
+  );
+}
+
 // Obtener información del usuario en MercadoLibre
 // GET /api/user/me?token=ACCESS_TOKEN
 export async function GET(request: Request) {
@@ -23,11 +40,19 @@ export async function GET(request: Request) {
     if (!response.ok) {
       const errorData = await response.text();
       console.error("MercadoLibre API error:", errorData);
-      throw new Error("Failed to fetch user info");
+      // throw new Error("Failed to fetch user info");
+      return NextResponse.json(
+        { error: "Error access token expired" },
+        { status: 401 }
+      );
     }
 
     const data = await response.json();
-    return NextResponse.json(data);
+    return NextResponse.json(data, {
+      headers: {
+        "Access-Control-Allow-Origin": EXTENSION_ORIGIN, // Permite todos los orígenes
+      },
+    });
   } catch (error) {
     console.error("Error fetching user info:", error);
     return NextResponse.json(
