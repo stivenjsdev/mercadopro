@@ -25,6 +25,7 @@ export async function GET(request: Request) {
   const token = searchParams.get("token");
   const siteId = searchParams.get("siteId");
   const term = searchParams.get("term");
+  const limit = searchParams.get("limit");
 
   if (!token) {
     return NextResponse.json({ error: "No token provided" }, { status: 400 });
@@ -36,7 +37,9 @@ export async function GET(request: Request) {
   try {
     // Hacer una solicitud a la API de MercadoLibre para obtener resultados de búsqueda
     const response = await fetch(
-      `https://api.mercadolibre.com/sites/${siteId}/search?q=${term}&limit=6`,
+      `https://api.mercadolibre.com/sites/${siteId}/search?q=${term}&limit=${
+        limit || "6"
+      }`,
       {
         headers: {
           Authorization: `Bearer ${token}`,

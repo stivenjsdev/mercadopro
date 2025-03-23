@@ -1,5 +1,22 @@
 import { NextResponse } from "next/server";
 
+// const EXTENSION_ORIGIN = 'chrome-extension://abc123'; // producción
+const EXTENSION_ORIGIN = "*"; // pruebas
+
+export async function OPTIONS() {
+  return NextResponse.json(
+    {},
+    {
+      status: 200,
+      headers: {
+        "Access-Control-Allow-Origin": EXTENSION_ORIGIN, // Permite todos los orígenes
+        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization",
+      },
+    }
+  );
+}
+
 // Obtener tendencias de MercadoLibre
 // GET /api/user/trends?token=ACCESS_TOKEN&siteId=SITE_ID&categoryId=CATEGORY_ID
 export async function GET(request: Request) {
@@ -39,7 +56,11 @@ export async function GET(request: Request) {
     }
 
     const data = await response.json();
-    return NextResponse.json(data);
+    return NextResponse.json(data, {
+      headers: {
+        "Access-Control-Allow-Origin": EXTENSION_ORIGIN,
+      },
+    });
   } catch (error) {
     console.error("Error fetching trends:", error);
     return NextResponse.json(
