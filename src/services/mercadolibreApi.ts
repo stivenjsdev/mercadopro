@@ -17,7 +17,7 @@ export async function getSearches({
   try {
     const encodedTerm = encodeURIComponent(term);
     const response = await fetch(
-      `/api/user/search?token=${accessToken}&siteId=${siteId}&term=${encodedTerm}`
+      `/api/user/search?token=${accessToken}&siteId=${siteId}&term=${encodedTerm}&limit=6`
     );
 
     if (!response.ok) {

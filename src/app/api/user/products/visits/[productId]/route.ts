@@ -22,7 +22,7 @@ export async function OPTIONS() {
 }
 
 // Obtener las visitas totales de un Producto de MercadoLibre
-// GET /api/products/visits/[productId]
+// GET /api/user/products/visits/[productId]
 export async function POST(request: Request, { params }: { params: Params }) {
   const { productId } = params;
   const { token, dateFrom, dateTo } = await request.json();

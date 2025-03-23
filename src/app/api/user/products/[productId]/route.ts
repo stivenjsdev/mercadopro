@@ -22,7 +22,7 @@ export async function OPTIONS() {
 }
 
 // Obtener información de Producto de MercadoLibre
-// GET /api/products/[productId]
+// GET /api/user/products/[productId]
 export async function POST(request: Request, { params }: { params: Params }) {
   const { productId } = params;
   const { token } = await request.json();

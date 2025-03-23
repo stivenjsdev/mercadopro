@@ -18,7 +18,7 @@ export async function OPTIONS() {
 }
 
 // Obtener resultados de búsqueda de MercadoLibre
-// GET /api/search?siteId=SITE_ID&term=SEARCH_TERM
+// GET /api/user/search?siteId=SITE_ID&term=SEARCH_TERM
 export async function GET(request: Request) {
   // Obtener el siteId y el término de búsqueda de la URL
   const { searchParams } = new URL(request.url);
@@ -37,8 +37,8 @@ export async function GET(request: Request) {
   try {
     // Hacer una solicitud a la API de MercadoLibre para obtener resultados de búsqueda
     const response = await fetch(
-      `https://api.mercadolibre.com/sites/${siteId}/search?q=${term}&limit=${
-        limit || "6"
+      `https://api.mercadolibre.com/sites/${siteId}/search?q=${term}${
+        limit ? `&limit=${limit}` : ""
       }`,
       {
         headers: {
