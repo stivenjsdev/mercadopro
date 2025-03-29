@@ -34,7 +34,8 @@ export async function POST(request: Request, { params }: { params: Params }) {
   try {
     // Hacer una solicitud a la API de MercadoLibre para obtener el producto
     const response = await fetch(
-      `https://api.mercadolibre.com/items/${productId}`,
+      // `https://api.mercadolibre.com/items/${productId}`,
+      `https://api.mercadolibre.com/items?ids=${productId}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -50,7 +51,8 @@ export async function POST(request: Request, { params }: { params: Params }) {
     }
 
     const data = await response.json();
-    return NextResponse.json(data, {
+    // return NextResponse.json(data, {
+    return NextResponse.json(data[0].body, {
       headers: {
         "Access-Control-Allow-Origin": EXTENSION_ORIGIN,
       },
