@@ -411,3 +411,12 @@ export interface WelcomeSettings {
   buyer_protection_programs: string[];
   status: string;
 }
+
+// ----
+export type CategorySearchResponse = {
+  domain_id: string;
+  domain_name: string;
+  category_id: string;
+  category_name: string;
+  attributes: unknown[]; // Cambia esto si conoces la estructura exacta
+};

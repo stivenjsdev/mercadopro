@@ -1,5 +1,6 @@
 import {
   Category,
+  CategorySearchResponse,
   SearchResponse,
   SuggestionsResponse,
   TrendsResponse,
@@ -106,6 +107,34 @@ export const getCategoryById = async ({
 
     const data: Category = await response.json();
 
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error instanceof Error ? error : new Error("Unknown error");
+  }
+};
+
+export const getCategoriesByTerm = async ({
+  term,
+  siteId,
+}: {
+  term: string;
+  siteId: string;
+}): Promise<CategorySearchResponse[]> => {
+  try {
+    const encodedTerm = encodeURIComponent(term);
+    const response = await fetch(
+      `/api/user/categories/search?siteId=${siteId}&term=${encodedTerm}`
+    );
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(
+        errorData.error || "Something went wrong fetching categories by term"
+      );
+    }
+
+    const data: CategorySearchResponse[] = await response.json();
     return data;
   } catch (error) {
     console.log(error);
