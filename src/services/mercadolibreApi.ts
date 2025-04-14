@@ -141,3 +141,27 @@ export const getCategoriesByTerm = async ({
     throw error instanceof Error ? error : new Error("Unknown error");
   }
 };
+
+export const getProductDataByUrl = async ({
+  productUrl,
+}: {
+  productUrl: string;
+}): Promise<{ categoryTexts: string[] }> => {
+  try {
+    const encodedUrl = encodeURIComponent(productUrl);
+    const response = await fetch(`/api/scrape/product?url=${encodedUrl}`);
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(
+        errorData.error || "Something went wrong fetching product categories"
+      );
+    }
+
+    const data: { categoryTexts: string[] } = await response.json();
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error instanceof Error ? error : new Error("Unknown error");
+  }
+};

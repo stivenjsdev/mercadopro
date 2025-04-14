@@ -1,6 +1,7 @@
 export type TermFormData = {
   productName: string;
   imageUrl: string;
+  productUrl: string;
 };
 
 export type ImageFormData = {

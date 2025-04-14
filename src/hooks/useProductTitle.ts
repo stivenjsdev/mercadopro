@@ -1,15 +1,17 @@
 import { useKeywords } from "@/hooks/useKeywords";
 import { gptQuery } from "@/services/gptApi";
 import {
+  getCategoriesByTerm,
   getCategoryById,
-  getSearches,
+  getProductDataByUrl,
+  // getSearches,
   getSuggestions,
   getTrends,
 } from "@/services/mercadolibreApi";
 import { Status } from "@/types/formsData";
 import {
   Category,
-  SearchResponse,
+  // SearchResponse,
   TrendsResponse,
 } from "@/types/mercadolibreResponses";
 import { useMutation } from "@tanstack/react-query";
@@ -19,14 +21,14 @@ import { useState } from "react";
 export const useProductTitle = () => {
   const [suggestedTitles, setSuggestedTitles] = useState<string[]>([]);
   const [productNameKeywords, setProductNameKeywords] = useState<string[]>([]);
-  const [searches, setSearches] = useState<SearchResponse | null>(null);
+  // const [searches, setSearches] = useState<SearchResponse | null>(null);
   const [trends, setTrends] = useState<TrendsResponse[][]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [productNameKeywordsStatus, setProductNameKeywordsStatus] =
     useState<Status>("success");
   const [trendsStatus, setTrendsStatus] = useState<Status>("success");
   const [categoriesStatus, setCategoriesStatus] = useState<Status>("success");
-  const [searchesStatus, setSearchesStatus] = useState<Status>("success");
+  // const [searchesStatus, setSearchesStatus] = useState<Status>("success");
   const [status, setStatus] = useState<Status>("success");
   const {
     keywords: imageKeywords,
@@ -38,9 +40,17 @@ export const useProductTitle = () => {
     mutationFn: getSuggestions,
   });
 
-  const { mutateAsync: mutateSearches } = useMutation({
-    mutationFn: getSearches,
+  const { mutateAsync: mutateProductDataByUrl } = useMutation({
+    mutationFn: getProductDataByUrl,
   });
+
+  const { mutateAsync: mutateCategoriesByTerm } = useMutation({
+    mutationFn: getCategoriesByTerm,
+  });
+
+  // const { mutateAsync: mutateSearches } = useMutation({
+  //   mutationFn: getSearches,
+  // });
 
   const { mutateAsync: mutateTrends } = useMutation({
     mutationFn: getTrends,
@@ -52,6 +62,7 @@ export const useProductTitle = () => {
 
   const generateKeywordsSuggestedTitlesAndTrends = async (
     productName: string,
+    productUrl: string,
     imageUrl: string,
     siteId: string
   ) => {
@@ -79,55 +90,95 @@ export const useProductTitle = () => {
       if (storedTokenData) {
         const tokenData = JSON.parse(storedTokenData);
 
-        // get searches and keywords from image
-        const [searches, imageKeywords] = await Promise.all([
-          mutateSearches({
-            term: productName,
-            siteId,
-            accessToken: tokenData.access_token,
+        // get Product Data and keywords from Image
+        const [productData, imageKeywords] = await Promise.all([
+          mutateProductDataByUrl({
+            productUrl,
           }),
           generateKeywordsByImageUrl(imageUrl, productName, siteId),
         ]);
-        setSearches(searches);
-        setSearchesStatus("success");
+        console.log("productData: ", productData);
+        // setSearches(searches);
+        // setSearchesStatus("success");
+
+        // Get category texts from product data using web scraping
+        const categoryTexts = productData.categoryTexts || [];
+        console.log("categoryTexts: ", categoryTexts);
+        // const categoryText = categoryTexts[categoryTexts.length - 1] || ""; // alternativa al at(-1)
+        const categoryText = categoryTexts.at(-1) || "";
+        console.log("categoryText: ", categoryText);
+
+        const categoriesByTerm = await mutateCategoriesByTerm({
+          term: categoryText,
+          siteId,
+        });
+        const categoryIds = categoriesByTerm.map(
+          (category) => category.category_id
+        );
+
+        const categories = await Promise.all(
+          categoryIds.map((categoryId) => mutateCategories({ categoryId }))
+        );
+
+        const category = findCategory(categories, categoryTexts);
 
         // get all categories associated with previous searches
-        const categoryIds = searches?.results.map((item) => item.category_id);
-        const uniqueCategoryIds = [...new Set(categoryIds)];
-        console.log("categorías encontradas: ", uniqueCategoryIds);
-        const categories = await Promise.all(
-          uniqueCategoryIds.map((categoryId) =>
-            mutateCategories({ categoryId })
-          )
-        );
-        console.log("categories data: ", categories);
-        setCategories(categories);
-        setCategoriesStatus("success");
+        // const categoryIds = searches?.results.map((item) => item.category_id);
+        // const uniqueCategoryIds = [...new Set(categoryIds)];
 
-        // get trends
-        const trends = await Promise.allSettled(
-          uniqueCategoryIds.map((categoryId) =>
-            mutateTrends({
-              categoryId,
-              siteId,
-              accessToken: tokenData.access_token,
-            })
-          )
-        );
-        const fullFilledTrends = trends
-          .map((trend) => {
-            if (trend.status === "fulfilled") {
-              return trend.value;
-            }
-          })
-          .filter((trend): trend is TrendsResponse[] => trend !== undefined);
-        setTrends(fullFilledTrends);
-        setTrendsStatus("success");
+        // console.log("categoría encontrada: ", uniqueCategoryIds);
+        // const categories = await Promise.all(
+        //   uniqueCategoryIds.map((categoryId) =>
+        //     mutateCategories({ categoryId })
+        //   )
+        // );
+        console.log("categories data: ", categories);
+        console.log("Category: ", category);
+        // setCategories(categories);
+        // setCategoriesStatus("success");
+        let trend = null;
+        if (category) {
+          setCategories([category]);
+          setCategoriesStatus("success");
+          // get trend
+          trend = await mutateTrends({
+            categoryId: category.id,
+            siteId,
+            accessToken: tokenData.access_token,
+          });
+          setTrends([trend]);
+          setTrendsStatus("success");
+        } else {
+          setCategories([]);
+          setCategoriesStatus("success");
+          setTrends([]);
+          setTrendsStatus("success");
+        }
+
+        // const trends = await Promise.allSettled(
+        //   uniqueCategoryIds.map((categoryId) =>
+        //     mutateTrends({
+        //       categoryId,
+        //       siteId,
+        //       accessToken: tokenData.access_token,
+        //     })
+        //   )
+        // );
+        // const fullFilledTrends = trends
+        //   .map((trend) => {
+        //     if (trend.status === "fulfilled") {
+        //       return trend.value;
+        //     }
+        //   })
+        //   .filter((trend): trend is TrendsResponse[] => trend !== undefined);
+        // setTrends(fullFilledTrends);
+        // setTrendsStatus("success");
         suggestTitles(
           productName,
           productNameKeywordsUnique || [],
           imageKeywords || [],
-          fullFilledTrends || []
+          // fullFilledTrends || []
+          trend ? [trend] : []
         );
       }
     } catch (error) {
@@ -190,17 +241,32 @@ export const useProductTitle = () => {
     }
   };
 
+  const findCategory = (
+    categories: Category[],
+    categoryTexts: string[]
+  ): Category | null => {
+    const encontrada = categories.find((category) => {
+      const names = category.path_from_root.map((item) => item.name);
+      return JSON.stringify(names) === JSON.stringify(categoryTexts);
+    });
+
+    return encontrada ? encontrada : null;
+    // return encontrada
+    //   ? encontrada.path_from_root[encontrada.path_from_root.length - 1].id
+    //   : "";
+  };
+
   return {
     productNameKeywords,
     imageKeywords,
-    searches,
+    // searches,
     trends,
     categories,
     suggestedTitles,
     productNameKeywordsStatus,
     trendsStatus,
     categoriesStatus,
-    searchesStatus,
+    // searchesStatus,
     status,
     imageStatus,
     generateKeywordsSuggestedTitlesAndTrends,

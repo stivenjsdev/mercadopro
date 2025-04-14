@@ -32,12 +32,12 @@ export default function TitleSearch({ userData }: TitleSearchProps) {
   const {
     productNameKeywords,
     imageKeywords,
-    searches,
+    // searches,
     trends,
     categories,
     suggestedTitles,
     productNameKeywordsStatus,
-    searchesStatus,
+    // searchesStatus,
     trendsStatus,
     categoriesStatus,
     status,
@@ -47,16 +47,17 @@ export default function TitleSearch({ userData }: TitleSearchProps) {
   } = useProductTitle();
 
   const form = useForm<TermFormData>({
-    defaultValues: { productName: "", imageUrl: "" },
+    defaultValues: { productName: "", imageUrl: "", productUrl: "" },
     mode: "onBlur", // This will trigger validation on blur
   });
 
   const onSubmit = async (formData: TermFormData) => {
-    const { productName, imageUrl } = formData;
+    const { productName, imageUrl, productUrl } = formData;
     setProductNameStorage(productName);
     setIsButtonLoading(true);
     await generateKeywordsSuggestedTitlesAndTrends(
       productName,
+      productUrl,
       imageUrl,
       userData.site_id
     );
@@ -84,6 +85,32 @@ export default function TitleSearch({ userData }: TitleSearchProps) {
                 </FormControl>
                 <FormDescription>
                   Este es el nombre de tu producto.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="productUrl"
+            rules={{
+              required: "La URL del producto es requerida",
+              validate: {
+                validURL: (value) =>
+                  isValidURL(value) || "La URL de la imagen no es válida",
+              },
+            }}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>URL del Producto</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Pega aquí la URL del producto..."
+                    {...field}
+                  />
+                </FormControl>
+                <FormDescription>
+                  Esta es la url de tu producto.
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -137,12 +164,12 @@ export default function TitleSearch({ userData }: TitleSearchProps) {
           productNameStorage={productNameStorage}
           productNameKeywords={productNameKeywords}
           imageKeywords={imageKeywords}
-          searches={searches}
+          // searches={searches}
           trends={trends}
           categories={categories}
           suggestedTitles={suggestedTitles}
           productNameKeywordsStatus={productNameKeywordsStatus}
-          searchesStatus={searchesStatus}
+          // searchesStatus={searchesStatus}
           trendsStatus={trendsStatus}
           categoriesStatus={categoriesStatus}
           status={status}

@@ -9,8 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Status } from "@/types/formsData";
 import {
   Category,
-  SearchResponse,
-  TrendsResponse,
+  TrendsResponse
 } from "@/types/mercadolibreResponses";
 import { capitalizeWords } from "@/utils";
 
@@ -20,10 +19,10 @@ type TitleAccordionProps = {
   imageKeywords: string[];
   categories: Category[];
   trends: TrendsResponse[][];
-  searches: SearchResponse | null;
+  // searches: SearchResponse | null;
   suggestedTitles: string[];
   productNameKeywordsStatus: Status;
-  searchesStatus: Status;
+  // searchesStatus: Status;
   trendsStatus: Status;
   categoriesStatus: Status;
   status: Status;
@@ -42,10 +41,10 @@ export default function TitleAccordion({
   imageKeywords,
   categories,
   trends,
-  searches,
+  // searches,
   suggestedTitles,
   productNameKeywordsStatus,
-  searchesStatus,
+  // searchesStatus,
   trendsStatus,
   categoriesStatus,
   status,
@@ -142,7 +141,7 @@ export default function TitleAccordion({
         </AccordionContent>
       </AccordionItem>
 
-      <AccordionItem value="item-5">
+      {/* <AccordionItem value="item-5">
         <AccordionTrigger>Búsquedas de Mercadolibre</AccordionTrigger>
         <AccordionContent>
           <ResultCard
@@ -159,7 +158,7 @@ export default function TitleAccordion({
               ))}
           </ResultCard>
         </AccordionContent>
-      </AccordionItem>
+      </AccordionItem> */}
 
       <AccordionItem value="item-6">
         <AccordionTrigger className="font-extrabold">
