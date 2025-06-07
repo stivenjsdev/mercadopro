@@ -34,7 +34,7 @@ export const metadata: Metadata = {
     title: "MercadoPro",
     description:
       "Tu Titulo y Descripción de Producto Generado con IA creado por Sergio Jiménez.",
-    url: "https://mercadopro.netlify.app/",
+    url: "https://mercadoproia.vercel.app/",
     images: [
       {
         url: "/images/logomercadopro.png",
