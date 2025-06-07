@@ -19,13 +19,13 @@ export async function OPTIONS() {
 }
 
 // Obtener categorías relacionadas con un término de búsqueda en MercadoLibre
-// GET /api/user/categories/search?siteId=SITE_ID&term=SEARCH_TERM
+// GET /api/user/categories/search?siteId=SITE_ID&term=SEARCH_TERM&token=ACCESS_TOKEN
 export async function GET(request: Request) {
-  // Obtener el siteId y el término de búsqueda de la URL
+  // Obtener el siteId, término de búsqueda y token de la URL
   const { searchParams } = new URL(request.url);
   const siteId = searchParams.get("siteId");
   const term = searchParams.get("term");
-  // Note: el endpoint de MELI puede tener un limit pero seria innecesario para el objetivo.
+  const token = searchParams.get("token");
 
   if (!siteId) {
     return NextResponse.json({ error: "No siteId provided" }, { status: 400 });
@@ -33,13 +33,21 @@ export async function GET(request: Request) {
   if (!term) {
     return NextResponse.json({ error: "No term provided" }, { status: 400 });
   }
+  if (!token) {
+    return NextResponse.json({ error: "No token provided" }, { status: 400 });
+  }
 
   try {
     // Hacer una solicitud a la API de MercadoLibre para obtener categorías relacionadas
     const response = await fetch(
       `https://api.mercadolibre.com/sites/${siteId}/domain_discovery/search?q=${encodeURIComponent(
         term
-      )}`
+      )}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
     );
 
     console.log(response.status);

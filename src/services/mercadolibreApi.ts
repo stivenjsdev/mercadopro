@@ -117,14 +117,16 @@ export const getCategoryById = async ({
 export const getCategoriesByTerm = async ({
   term,
   siteId,
+  token,
 }: {
   term: string;
   siteId: string;
+  token: string;
 }): Promise<CategorySearchResponse[]> => {
   try {
     const encodedTerm = encodeURIComponent(term);
     const response = await fetch(
-      `/api/user/categories/search?siteId=${siteId}&term=${encodedTerm}`
+      `/api/user/categories/search?siteId=${siteId}&term=${encodedTerm}&token=${token}`
     );
 
     if (!response.ok) {

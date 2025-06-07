@@ -111,6 +111,7 @@ export const useProductTitle = () => {
         const categoriesByTerm = await mutateCategoriesByTerm({
           term: categoryText,
           siteId,
+          token: tokenData.access_token,
         });
         const categoryIds = categoriesByTerm.map(
           (category) => category.category_id
