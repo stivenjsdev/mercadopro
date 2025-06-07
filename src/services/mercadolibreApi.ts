@@ -93,11 +93,13 @@ export const getTrends = async ({
 
 export const getCategoryById = async ({
   categoryId,
+  token,
 }: {
   categoryId: string;
+  token: string;
 }) => {
   try {
-    const response = await fetch("/api/user/categories/" + categoryId);
+    const response = await fetch(`/api/user/categories/${categoryId}?token=${token}`);
     if (!response.ok) {
       const errorData = await response.json();
       throw new Error(

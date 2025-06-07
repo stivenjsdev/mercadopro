@@ -118,7 +118,9 @@ export const useProductTitle = () => {
         );
 
         const categories = await Promise.all(
-          categoryIds.map((categoryId) => mutateCategories({ categoryId }))
+          categoryIds.map((categoryId) =>
+            mutateCategories({ categoryId, token: tokenData.access_token })
+          )
         );
 
         const category = findCategory(categories, categoryTexts);
