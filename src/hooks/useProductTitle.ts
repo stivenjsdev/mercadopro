@@ -136,6 +136,7 @@ export const useProductTitle = () => {
         //   )
         // );
         console.log("categories data: ", categories);
+        console.log("CategoryTexts: ", categoryTexts);
         console.log("Category: ", category);
         // setCategories(categories);
         // setCategoriesStatus("success");
