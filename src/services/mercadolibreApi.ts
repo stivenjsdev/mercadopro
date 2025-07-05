@@ -44,19 +44,13 @@ export async function getSuggestions({
 }): Promise<SuggestionsResponse> {
   try {
     const encodedMessage = encodeURIComponent(message);
-    const url = `https://http2.mlstatic.com/resources/sites/${siteId}/autosuggest?showFilters=true&limit=6&api_version=2&q=${encodedMessage}`;
-
-    const response = await fetch(url, {
-      headers: {
-        Origin: "https://articulo.mercadolibre.com.co",
-      },
-    });
-
+    const response = await fetch(
+      `/api/mercadolibre/suggestions?message=${encodedMessage}&siteId=${siteId}`
+    );
     if (!response.ok) {
       const errorData = await response.json();
       throw new Error(errorData.error || "Something went wrong");
     }
-
     const data: SuggestionsResponse = await response.json();
     return data;
   } catch (error) {
