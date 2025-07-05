@@ -46,7 +46,11 @@ export async function getSuggestions({
     const encodedMessage = encodeURIComponent(message);
     const url = `https://http2.mlstatic.com/resources/sites/${siteId}/autosuggest?showFilters=true&limit=6&api_version=2&q=${encodedMessage}`;
 
-    const response = await fetch(url);
+    const response = await fetch(url, {
+      headers: {
+        Origin: "https://articulo.mercadolibre.com.co",
+      },
+    });
 
     if (!response.ok) {
       const errorData = await response.json();
@@ -99,7 +103,9 @@ export const getCategoryById = async ({
   token: string;
 }) => {
   try {
-    const response = await fetch(`/api/user/categories/${categoryId}?token=${token}`);
+    const response = await fetch(
+      `/api/user/categories/${categoryId}?token=${token}`
+    );
     if (!response.ok) {
       const errorData = await response.json();
       throw new Error(
