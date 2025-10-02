@@ -103,10 +103,10 @@ export const useProductTitle = () => {
 
         // Get category texts from product data using web scraping
         const categoryTexts = productData.categoryTexts || [];
-        console.log("categoryTexts: ", categoryTexts);
+        console.log("categoryTexts 2: ", categoryTexts);
         // const categoryText = categoryTexts[categoryTexts.length - 1] || ""; // alternativa al at(-1)
         const categoryText = categoryTexts.at(-1) || "";
-        console.log("categoryText: ", categoryText);
+        console.log("categoryText 2: ", categoryText);
 
         const categoriesByTerm = await mutateCategoriesByTerm({
           term: categoryText,
