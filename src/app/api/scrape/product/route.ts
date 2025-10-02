@@ -55,7 +55,8 @@ export async function GET(request: Request) {
     // Seleccionar el nav con id=":R4dr9jm:" y extraer los textos de los enlaces dentro de los <li>
     const categoryTexts: string[] = [];
     // :R4dr9jm:
-    $('nav[id=":R4dracde:"] ol > li > a').each((_, element) => {
+    // :R4dracde:
+    $('nav[id=":R4drac5e:"] ol > li > a').each((_, element) => {
       const text = $(element).text().trim();
       if (text) {
         categoryTexts.push(text);
