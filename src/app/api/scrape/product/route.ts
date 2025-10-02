@@ -72,6 +72,15 @@ export async function GET(request: Request) {
         }
       });
     }
+    // Si no se encontraron elementos, intentar con el segundo selector
+    if (categoryTexts.length === 0) {
+      $('nav[id=":R2jj97de:"] ol > li > a').each((_, element) => {
+        const text = $(element).text().trim();
+        if (text) {
+          categoryTexts.push(text);
+        }
+      });
+    }
     // Si aún no se encontraron elementos, intentar con el tercer selector
     if (categoryTexts.length === 0) {
       $('nav[id=":R5769hm:"] ol > li > a').each((_, element) => {
