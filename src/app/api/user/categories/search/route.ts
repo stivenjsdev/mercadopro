@@ -44,9 +44,10 @@ export async function GET(request: Request) {
         term
       )}`,
       {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        // Parece ser que ya no necesita el token, pero ojo
+        // headers: {
+        //   Authorization: `Bearer ${token}`,
+        // },
       }
     );
 
