@@ -31,7 +31,8 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "No siteId provided" }, { status: 400 });
   }
   if (!term) {
-    return NextResponse.json({ error: "No term provided" }, { status: 400 });
+    return NextResponse.json([], { status: 200 }); // Devolvemos un arreglo vacío para no disparar el catch
+    // return NextResponse.json({ error: "No term provided" }, { status: 400 });
   }
   if (!token) {
     return NextResponse.json({ error: "No token provided" }, { status: 400 });

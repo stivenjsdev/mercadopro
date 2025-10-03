@@ -90,29 +90,30 @@ export const useProductTitle = () => {
       if (storedTokenData) {
         const tokenData = JSON.parse(storedTokenData);
 
-        // get Product Data and keywords from Image
+        // get Product Data by scraping and keywords from Image
         const [productData, imageKeywords] = await Promise.all([
           mutateProductDataByUrl({
             productUrl,
           }),
           generateKeywordsByImageUrl(imageUrl, productName, siteId),
         ]);
-        console.log("productData: ", productData);
+        console.log("data del producto obtenida por scraping: [productData]: ", productData);
         // setSearches(searches);
         // setSearchesStatus("success");
 
         // Get category texts from product data using web scraping
         const categoryTexts = productData.categoryTexts || [];
-        console.log("categoryTexts 2: ", categoryTexts);
+        console.log("arreglo de categorías de productData: [categoryTexts]: ", categoryTexts);
         // const categoryText = categoryTexts[categoryTexts.length - 1] || ""; // alternativa al at(-1)
         const categoryText = categoryTexts.at(-1) || "";
-        console.log("categoryText 2: ", categoryText);
+        console.log("ultimo elemento de categoryTexts: [categoryText]: ", categoryText); // Representa la categoría exacta
 
         const categoriesByTerm = await mutateCategoriesByTerm({
           term: categoryText,
           siteId,
           token: tokenData.access_token,
         });
+        console.log("Categorías obtenidas de la api de Meli a partir de categoryText(term): [categoriesByTerm]: ", categoriesByTerm);
         const categoryIds = categoriesByTerm.map(
           (category) => category.category_id
         );
@@ -123,6 +124,8 @@ export const useProductTitle = () => {
           )
         );
 
+        // Compara el arreglo de categoryTexts con path_from_root de cada categoría de categories para encontrar la categoría que coincide exactamente
+        // si no hay coincidencia exacta, devolver null
         const category = findCategory(categories, categoryTexts);
 
         // get all categories associated with previous searches
@@ -135,9 +138,8 @@ export const useProductTitle = () => {
         //     mutateCategories({ categoryId })
         //   )
         // );
-        console.log("categories data: ", categories);
-        console.log("CategoryTexts: ", categoryTexts);
-        console.log("Category: ", category);
+        console.log("[categories]: ", categories);
+        console.log("[Category]: ", category);
         // setCategories(categories);
         // setCategoriesStatus("success");
         let trend = null;
@@ -251,8 +253,10 @@ export const useProductTitle = () => {
   ): Category | null => {
     const encontrada = categories.find((category) => {
       const names = category.path_from_root.map((item) => item.name);
+      console.log("findCategory(): names: ", names);
       return JSON.stringify(names) === JSON.stringify(categoryTexts);
     });
+    console.log("findCategory(): encontrada: ", encontrada);
 
     return encontrada ? encontrada : null;
     // return encontrada
