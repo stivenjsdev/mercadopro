@@ -92,7 +92,7 @@ export async function GET(request: Request) {
     }
 
     return NextResponse.json(
-      { categoryTexts, message: "R4drac5e" },
+      { categoryTexts, message: `${html}` },
       { status: 200 }
     );
   } catch (error) {
