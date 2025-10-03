@@ -91,7 +91,10 @@ export async function GET(request: Request) {
       });
     }
 
-    return NextResponse.json({ categoryTexts }, { status: 200 });
+    return NextResponse.json(
+      { categoryTexts, message: "R4drac5e" },
+      { status: 200 }
+    );
   } catch (error) {
     console.error("Error scraping product data:", error);
     return NextResponse.json(
