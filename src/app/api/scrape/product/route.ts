@@ -46,6 +46,15 @@ export async function GET(request: Request) {
         Connection: "keep-alive",
         // enviar un referer suele ayudar con algunos sitios
         Referer: productUrl,
+        // additional headers commonly sent by browsers — may help avoid simple bot checks
+        "Sec-CH-UA": '"Chromium";v="125", "Google Chrome";v="125", ";Not A Brand";v="99"',
+        "Sec-CH-UA-Mobile": '?0',
+        "Sec-CH-UA-Platform": '"Windows"',
+        "Sec-Fetch-Site": 'none',
+        "Sec-Fetch-Mode": 'navigate',
+        "Sec-Fetch-User": '?1',
+        "Sec-Fetch-Dest": 'document',
+        "Upgrade-Insecure-Requests": '1',
       },
     });
     // console.log("🚀 ~ GET ~ response:", response);
@@ -76,16 +85,139 @@ export async function GET(request: Request) {
     // Cargar el HTML en Cheerio
     const $ = cheerio.load(html);
 
-  // Seleccionar el nav con id=":R4dr9jm:" y extraer los textos de los enlaces dentro de los <li>
+    // --- Attempt to extract static data from the page before relying on DOM selectors ---
+    // 1) JSON-LD (<script type="application/ld+json">)
     const categoryTexts: string[] = [];
-    // :R4dr9jm:
-    // :R4dracde:
-    $('nav[id=":R4drac5e:"] ol > li > a').each((_, element) => {
-      const text = $(element).text().trim();
-      if (text) {
-        categoryTexts.push(text);
+    try {
+      $('script[type="application/ld+json"]').each((_, el) => {
+        const raw = $(el).contents().text();
+        if (!raw) return;
+        try {
+          const parsed = JSON.parse(raw);
+          // JSON-LD can be an array or object
+          const items = Array.isArray(parsed) ? parsed : [parsed];
+          for (const it of items) {
+            if (it['@type'] === 'BreadcrumbList' && Array.isArray(it.itemListElement)) {
+              for (const entry of it.itemListElement) {
+                if (entry.name) categoryTexts.push(String(entry.name).trim());
+                else if (entry.item && entry.item.name) categoryTexts.push(String(entry.item.name).trim());
+              }
+            }
+            // Some sites include product/category information in other JSON-LD types
+            if (it['@type'] && String(it['@type']).toLowerCase().includes('product') && it.category) {
+              if (Array.isArray(it.category)) categoryTexts.push(...(it.category as unknown[]).map((c) => String(c)));
+              else categoryTexts.push(String(it.category));
+            }
+          }
+        } catch {
+          // ignore parse errors
+        }
+      });
+    } catch {
+      // ignore errors
+    }
+
+    // 2) Embedded JSON in inline scripts (common patterns)
+    if (categoryTexts.length === 0) {
+      try {
+        const patterns = [
+          /window\.__INITIAL_STATE__\s*=\s*(\{[\s\S]*?\})\s*;?/m,
+          /window\.__PRELOADED_STATE__\s*=\s*(\{[\s\S]*?\})\s*;?/m,
+          /var\s+__PRELOADED_STATE__\s*=\s*(\{[\s\S]*?\})\s*;?/m,
+          /dataLayer\s*=\s*(\[[\s\S]*?\])\s*;?/m,
+        ];
+        for (const pat of patterns) {
+          const m = pat.exec(html);
+          if (m && m[1]) {
+            try {
+              const obj = JSON.parse(m[1]);
+              // recursively search for likely breadcrumb/category keys
+              const found: string[] = [];
+              const keysToFind = ['breadcrumb', 'breadcrumbs', 'categories', 'path_from_root', 'category_name', 'category', 'category_id', 'category_path'];
+              const search = (o: unknown) => {
+                if (!o || typeof o !== 'object') return;
+                if (Array.isArray(o)) {
+                  for (const v of o) search(v);
+                  return;
+                }
+                for (const k of Object.keys(o)) {
+                  const low = k.toLowerCase();
+                  const record = o as Record<string, unknown>;
+                  if (keysToFind.includes(low)) {
+                    const val = record[k];
+                    if (typeof val === 'string') found.push(val.trim());
+                    else if (Array.isArray(val)) {
+                      for (const vv of val) {
+                        if (typeof vv === 'string') found.push(vv.trim());
+                        else if (vv && vv.name) found.push(String(vv.name).trim());
+                      }
+                    } else if (val && typeof val === 'object') {
+                      const valRec = val as Record<string, unknown>;
+                      if ('name' in valRec && typeof valRec.name === 'string') found.push(String(valRec.name).trim());
+                      else search(valRec);
+                    }
+                  } else {
+                    search(record[k]);
+                  }
+                }
+              };
+              search(obj);
+              if (found.length) {
+                categoryTexts.push(...found);
+                break;
+              }
+            } catch {
+              // ignore parse errors
+            }
+          }
+        }
+      } catch {
+        // ignore
       }
-    });
+    }
+
+    // If still empty, proceed to Cheerio selectors below
+
+  // Seleccionar el nav con id=":R4dr9jm:" y extraer los textos de los enlaces dentro de los <li>
+    // If JSON-LD/embedded JSON didn't populate categoryTexts, fall back to DOM scraping
+    if (categoryTexts.length === 0) {
+      // :R4dr9jm:
+      // :R4dracde:
+      $('nav[id=":R4drac5e:"] ol > li > a').each((_, element) => {
+        const text = $(element).text().trim();
+        if (text) {
+          categoryTexts.push(text);
+        }
+      });
+
+      // Si no se encontraron elementos, intentar con el segundo selector
+      if (categoryTexts.length === 0) {
+        $('nav[id=":R5769gm:"] ol > li > a').each((_, element) => {
+          const text = $(element).text().trim();
+          if (text) {
+            categoryTexts.push(text);
+          }
+        });
+      }
+      // Si no se encontraron elementos, intentar con el segundo selector
+      if (categoryTexts.length === 0) {
+        $('nav[id=":R2jj97de:"] ol > li > a').each((_, element) => {
+          const text = $(element).text().trim();
+          if (text) {
+            categoryTexts.push(text);
+          }
+        });
+      }
+      // Si aún no se encontraron elementos, intentar con el tercer selector
+      if (categoryTexts.length === 0) {
+        $('nav[id=":R5769hm:"] ol > li > a').each((_, element) => {
+          const text = $(element).text().trim();
+          if (text) {
+            categoryTexts.push(text);
+          }
+        });
+      }
+    }
 
     // Si no se encontraron elementos, intentar con el segundo selector
     if (categoryTexts.length === 0) {
